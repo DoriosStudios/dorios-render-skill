@@ -4,10 +4,11 @@
 from __future__ import annotations
 
 import argparse
-import json
 import subprocess
 import sys
 from pathlib import Path
+
+from json_utils import load_jsonc
 
 
 def parse_args() -> argparse.Namespace:
@@ -25,9 +26,9 @@ def parse_args() -> argparse.Namespace:
 
 def block_identifier(path: Path) -> str:
     try:
-        data = json.loads(path.read_text(encoding="utf-8-sig"))
+        data = load_jsonc(path)
         identifier = data["minecraft:block"]["description"]["identifier"]
-    except (OSError, json.JSONDecodeError, KeyError, TypeError) as exc:
+    except (OSError, ValueError, KeyError, TypeError) as exc:
         raise RuntimeError(f"Invalid Bedrock block definition: {path}") from exc
     return str(identifier)
 

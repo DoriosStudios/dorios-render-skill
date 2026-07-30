@@ -4,9 +4,10 @@
 from __future__ import annotations
 
 import argparse
-import json
 from pathlib import Path
 from typing import Any
+
+from json_utils import load_jsonc
 
 
 MESH_EXTENSIONS = {".blend", ".fbx", ".glb", ".gltf", ".obj"}
@@ -14,8 +15,8 @@ MESH_EXTENSIONS = {".blend", ".fbx", ".glb", ".gltf", ".obj"}
 
 def load_json(path: Path) -> dict[str, Any]:
     try:
-        return json.loads(path.read_text(encoding="utf-8-sig"))
-    except json.JSONDecodeError as exc:
+        return load_jsonc(path)
+    except ValueError as exc:
         raise SystemExit(f"Invalid JSON in {path}: {exc}") from exc
 
 

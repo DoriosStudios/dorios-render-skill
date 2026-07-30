@@ -14,6 +14,11 @@ from typing import Any
 import bpy
 from mathutils import Vector
 
+SCRIPT_DIRECTORY = Path(__file__).resolve().parent
+if str(SCRIPT_DIRECTORY) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIRECTORY))
+from json_utils import load_jsonc
+
 
 IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".tga", ".bmp", ".webp"}
 FACE_NAMES = ("north", "south", "west", "east", "down", "up")
@@ -69,7 +74,7 @@ def canonical(value: str) -> str:
 
 
 def load_json(path: Path) -> dict[str, Any]:
-    return json.loads(path.read_text(encoding="utf-8-sig"))
+    return load_jsonc(path)
 
 
 def bedrock_geometries(data: dict[str, Any]) -> list[dict[str, Any]]:
@@ -383,18 +388,49 @@ def terrain_references(resource_pack: Path | None) -> dict[str, str]:
 
 
 def find_geometry(resource_pack: Path, identifier: str) -> dict[str, Any]:
-    model_root = resource_pack / "models"
-    for path in model_root.rglob("*.json") if model_root.is_dir() else []:
-        try:
-            data = load_json(path)
-        except (OSError, json.JSONDecodeError):
-            continue
-        if any(
-            geometry.get("description", {}).get("identifier") == identifier
-            for geometry in bedrock_geometries(data)
-        ):
-            return data
-    raise RuntimeError(f"Bedrock geometry {identifier!r} was not found below {model_root}")
+    model_roots = [resource_pack / "models"]
+    workspace = resource_pack.parent.parent
+    if workspace.is_dir():
+        model_roots.extend(
+            candidate for candidate in workspace.glob("*/RP/models")
+            if candidate.is_dir() and candidate not in model_roots
+        )
+    for model_root in model_roots:
+        for path in model_root.rglob("*.json") if model_root.is_dir() else []:
+            try:
+                data = load_json(path)
+            except (OSError, ValueError):
+                continue
+            if any(
+                geometry.get("description", {}).get("identifier") == identifier
+                for geometry in bedrock_geometries(data)
+            ):
+                return data
+    searched = ", ".join(map(str, model_roots))
+    raise RuntimeError(f"Bedrock geometry {identifier!r} was not found below: {searched}")
+
+
+def legacy_block_materials(resource_pack: Path | None, identifier: str) -> dict[str, Any]:
+    if resource_pack is None:
+        return {}
+    path = resource_pack / "blocks.json"
+    if not path.is_file():
+        return {}
+    entry = load_json(path).get(identifier, {})
+    textures = entry.get("textures") if isinstance(entry, dict) else None
+    if isinstance(textures, str):
+        return {"*": {"texture": textures}}
+    if isinstance(textures, dict):
+        result: dict[str, Any] = {}
+        side = textures.get("side") or textures.get("*")
+        if side:
+            result["*"] = {"texture": side}
+        for face in FACE_NAMES:
+            value = textures.get(face)
+            if value:
+                result[face] = {"texture": value}
+        return result
+    return {}
 
 
 def import_bedrock_block(data: dict[str, Any], args: argparse.Namespace, catalog: TextureCatalog) -> list[bpy.types.Object]:
@@ -402,9 +438,13 @@ def import_bedrock_block(data: dict[str, Any], args: argparse.Namespace, catalog
     components = block.get("components", {})
     identifier = str(block.get("description", {}).get("identifier", args.model.stem))
     materials = components.get("minecraft:material_instances", {})
-    if not isinstance(materials, dict) or not materials:
-        raise RuntimeError(f"Bedrock block {identifier} has no minecraft:material_instances")
     resource_pack = resource_pack_path(args)
+    if not isinstance(materials, dict) or not materials:
+        materials = legacy_block_materials(resource_pack, identifier)
+    if not materials:
+        raise RuntimeError(
+            f"Bedrock block {identifier} has neither minecraft:material_instances nor legacy RP/blocks.json textures"
+        )
     terrain = terrain_references(resource_pack)
     default_material = materials.get("*", {})
 

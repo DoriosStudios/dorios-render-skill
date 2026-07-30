@@ -15,6 +15,7 @@ The scripts inspect JSON structure instead of relying only on extensions:
 
 - Bedrock geometry: `minecraft:geometry`, `geometry.*`, or a geometry object containing `bones` and `description`.
 - Bedrock block definition: top-level `minecraft:block`; resolve its geometry and material instances using the sibling `RP` folder.
+- Minecraft JSONC files may contain `//` or `/* */` comments; parse them without altering comment-like text inside strings.
 - Blockbench: `meta.model_format`, `elements`, and usually `outliner`.
 - Java block model: `parent`, `textures`, and/or `elements` whose cubes contain named faces.
 - Unknown JSON: stop and print the top-level keys. Do not assume it is Bedrock.
@@ -31,6 +32,8 @@ The renderer builds an index from each file/directory passed to `--textures`. Ma
 4. the only supplied image, when unambiguous.
 
 Bedrock geometry usually uses one atlas PNG whose dimensions correspond to `texture_width` and `texture_height`. Supply it directly when possible.
+
+Legacy Bedrock blocks without `minecraft:material_instances` resolve their face textures from `RP/blocks.json`. If a custom geometry is supplied by a dependency pack, search sibling project `RP/models` folders before reporting it missing.
 
 Java block models resolve `#variables` recursively through the model's `textures` map. For inherited parent JSON outside `cube_all`, `cube`, and `cube_column`, provide a flattened model containing `elements` or also provide the needed parent model for a future extension.
 

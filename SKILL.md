@@ -88,7 +88,7 @@ If the user's coordinate convention differs, render a low-resolution preview and
 ## Format routing
 
 - Bedrock `.geo.json` / geometry JSON: preserve cube dimensions, pivots, hierarchy, base rotations, mirror flags, and UV coordinates where represented.
-- Bedrock behavior-pack block JSON: read `minecraft:geometry` and per-face `minecraft:material_instances`, then resolve texture keys through the sibling resource pack.
+- Bedrock behavior-pack block JSON/JSONC: read `minecraft:geometry`; use per-face `minecraft:material_instances` or legacy `RP/blocks.json` textures; resolve texture keys and dependency geometries through sibling resource packs.
 - Java block-model JSON: render explicit `elements`; synthesize standard cube parents such as `cube_all` and `cube_column`; resolve texture variables from supplied texture paths.
 - `.bbmodel`: render cube elements and outliner groups. Warn if the file relies on unsupported mesh elements, animations, or display transforms.
 - `.glb`, `.gltf`, `.obj`, `.fbx`, `.blend`: import using Blender. Preserve embedded materials; apply the supplied texture only to material slots that have no image texture.
