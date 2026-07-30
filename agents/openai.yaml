@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dorios Isometric Renderer"
+  short_description: "Renderiza modelos y texturas sin IA generativa"
+  default_prompt: "Usa $dorios-render-skill para renderizar este modelo con sus texturas en vista isométrica."
