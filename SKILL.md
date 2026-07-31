@@ -17,8 +17,8 @@ Create a reproducible Blender render from the supplied geometry and textures. Ne
    ```
 
 3. Translate natural-language view requests using the view table below. Use `iso-ne` when no view is specified.
-4. Use the canonical default final canvas: `80x80`, square aspect ratio, automatic orthographic framing, `0.14` margin, and transparent background. Preserve these proportions and empty margins unless the user explicitly requests a different resolution, margin, aspect ratio, framing, or background.
-5. Render the default image at `1024x1024` in Blender, then reduce it to `80x80` with the bundled exact Nearest Neighbour resizer. Never render directly at 80x80 and never use bilinear, bicubic, antialiased, or browser/CSS resizing for the delivered PNG.
+4. Use the canonical default final canvas: `80x80`, square aspect ratio, automatic orthographic framing, `0.025` margin, and transparent background. Center the non-zero alpha bounds exactly on both canvas axes without resizing or changing the margins. Preserve these proportions unless the user explicitly requests a different resolution, margin, aspect ratio, framing, background, or disables centering.
+5. Render the default image at `1024x1024` in Blender, center its visible alpha bounds in that unchanged HD canvas, then reduce it to `80x80` with the bundled exact Nearest Neighbour resizer. Never render directly at 80x80 and never use bilinear, bicubic, antialiased, or browser/CSS resizing for the delivered PNG.
 6. Invoke the launcher. Pass every texture file or one texture directory after `--textures`. Repeat `--hide-bone` and `--bone-rotation` as needed.
 7. Verify that the PNG exists, has the requested dimensions, and visually inspect it at an integer zoom level when an image-viewing tool is available. If the view hides an important feature, rerender from a better angle while preserving the user's explicit choices.
 8. Return the PNG and state the chosen view, hidden bones, and any format limitation that affected the result.
@@ -31,6 +31,12 @@ python <skill-dir>/scripts/render_bedrock_pack.py `
   --output <render-folder> `
   --view iso-ne
 ```
+
+For large packs, repeat `--exclude-path <fragment>` to omit model families, repeat `--include-path <fragment>` to render only selected families, and use `--include-identifier-suffix <suffix>` or `--exclude-identifier-suffix <suffix>` for identifier-based selection such as rendering only `_seeds` definitions from a crop folder. Use `--jobs <count>` for controlled concurrent Blender processes, and add `--skip-existing` to resume an interrupted batch without replacing completed PNGs. The batch renderer rejects duplicate identifier-derived filenames before rendering.
+
+The batch renderer automatically loads `<pack-root>/Assets/render_overrides.json` when present, or accepts `--overrides <file>`. Use `path_rules` for family-wide settings and `blocks` keyed by full identifier for `model_rotation`, `ortho_scale`, `margin`, `resolution`, `view`, `lighting`, `hide_bones`, or `bone_rotations` exceptions. This keeps verified pack-specific framing, state visibility, and orientation reproducible.
+
+For a placed multi-block composition, create a temporary JSON/JSONC manifest and pass `--manifest` instead of `--model`. Read [references/structures.md](references/structures.md) before creating the manifest. Use `--source-output <name_hd.png>` to retain the high-resolution Blender source while `--output` receives the Nearest Neighbour result.
 
 ## Render command
 
@@ -55,13 +61,16 @@ Useful options:
 - `--ortho-scale <number>` to override automatic framing
 - `--resolution WIDTHxHEIGHT` for the delivered PNG (default `80x80`)
 - `--render-resolution WIDTHxHEIGHT` for the Blender source (automatic `1024x1024` for the default output)
-- `--margin <fraction>` (default `0.14`), `--samples <number>`
-- `--background transparent|#RRGGBB`, `--lighting studio|flat|dramatic`
+- `--source-output <hd.png>` to preserve that Blender source beside the scaled result
+- `--no-center-content` to preserve the raw camera position instead of centering visible alpha bounds
+- `--margin <fraction>` (default `0.025`), `--samples <number>`
+- `--background transparent|#RRGGBB`, `--lighting balanced|left_light|right_light|studio|flat|dramatic`
 - `--ground auto|on|off`, `--no-shadows`, `--texture-filter closest|linear`
 - `--blender <path>` when Blender is not on `PATH`
 - `--dry-run` to print the Blender command without executing it
 
 Use `closest` texture filtering by default for Minecraft and other pixel art. Keep texture colors unchanged; do not repaint, upscale, hallucinate, or complete missing pixels.
+Use `right_light` by default. It provides the strong upper-right studio key, softens the darkest face with a secondary light placed in the opposite direction at exactly 20% of the main key energy, and uses `0.20` exposure. `left_light` mirrors every directional light around the camera axis with identical energy, height, softness, fill ratio, material response, and exposure. Use `balanced` only when the prompt requests normalized faces; it uses equal upper-left and upper-right keys plus a weak centered front fill. `studio` remains a backward-compatible alias of `left_light`.
 
 ## View mapping
 
@@ -88,7 +97,8 @@ If the user's coordinate convention differs, render a low-resolution preview and
 ## Format routing
 
 - Bedrock `.geo.json` / geometry JSON: preserve cube dimensions, pivots, hierarchy, base rotations, mirror flags, and UV coordinates where represented.
-- Bedrock behavior-pack block JSON/JSONC: read `minecraft:geometry`; use per-face `minecraft:material_instances` or legacy `RP/blocks.json` textures; resolve texture keys and dependency geometries through sibling resource packs.
+- Bedrock behavior-pack block JSON/JSONC: read `minecraft:geometry`; use per-face and per-cube `minecraft:material_instances` or legacy `RP/blocks.json` textures; resolve texture keys and dependency geometries through sibling resource packs. Scale UV coordinates to each material texture's actual atlas dimensions and respect `uv_rotation` when a geometry mixes atlas sizes. This prevents crop X-planes and similar thin geometry from wrapping or repeating.
+- Bedrock blocks whose materials exist only in `permutations`: for a catalog render, merge the last material-bearing permutation over the base components so staged blocks such as crops appear in their mature/complete state.
 - Java block-model JSON: render explicit `elements`; synthesize standard cube parents such as `cube_all` and `cube_column`; resolve texture variables from supplied texture paths.
 - `.bbmodel`: render cube elements and outliner groups. Warn if the file relies on unsupported mesh elements, animations, or display transforms.
 - `.glb`, `.gltf`, `.obj`, `.fbx`, `.blend`: import using Blender. Preserve embedded materials; apply the supplied texture only to material slots that have no image texture.

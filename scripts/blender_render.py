@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import math
 import re
@@ -27,7 +28,9 @@ FACE_NAMES = ("north", "south", "west", "east", "down", "up")
 def arguments() -> argparse.Namespace:
     argv = sys.argv[sys.argv.index("--") + 1 :] if "--" in sys.argv else []
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model", required=True, type=Path)
+    source = parser.add_mutually_exclusive_group(required=True)
+    source.add_argument("--model", type=Path)
+    source.add_argument("--manifest", type=Path)
     parser.add_argument("--textures", nargs="*", default=[], type=Path)
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--view", default="iso-ne")
@@ -40,10 +43,14 @@ def arguments() -> argparse.Namespace:
     parser.add_argument("--resource-pack", type=Path)
     parser.add_argument("--ortho-scale", type=float)
     parser.add_argument("--resolution", default="1024x1024")
-    parser.add_argument("--margin", type=float, default=0.14)
+    parser.add_argument("--margin", type=float, default=0.025)
     parser.add_argument("--samples", type=int, default=64)
     parser.add_argument("--background", default="transparent")
-    parser.add_argument("--lighting", default="studio")
+    parser.add_argument(
+        "--lighting",
+        choices=["balanced", "left_light", "right_light", "studio", "flat", "dramatic"],
+        default="right_light",
+    )
     parser.add_argument("--ground", default="auto")
     parser.add_argument("--no-shadows", action="store_true")
     parser.add_argument("--texture-filter", default="closest")
@@ -96,9 +103,10 @@ def bedrock_geometries(data: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 class TextureCatalog:
-    def __init__(self, paths: list[Path], interpolation: str) -> None:
+    def __init__(self, paths: list[Path], interpolation: str, emission: float = 0.16) -> None:
         self.files: list[Path] = []
         self.interpolation = "Closest" if interpolation == "closest" else "Linear"
+        self.emission = emission
         for supplied in paths:
             if supplied.is_dir():
                 self.files.extend(
@@ -153,7 +161,7 @@ class TextureCatalog:
             if emission_input:
                 links.new(texture.outputs["Color"], emission_input)
             if emission_strength:
-                emission_strength.default_value = 0.12
+                emission_strength.default_value = self.emission
             try:
                 material.surface_render_method = "DITHERED"
             except AttributeError:
@@ -173,12 +181,20 @@ class TextureCatalog:
         return int(image.size[0]), int(image.size[1])
 
 
-def uv_quad(rect: list[float] | tuple[float, ...], width: float, height: float, mirror: bool = False) -> list[tuple[float, float]]:
+def uv_quad(
+    rect: list[float] | tuple[float, ...],
+    width: float,
+    height: float,
+    mirror: bool = False,
+    rotation: int = 0,
+) -> list[tuple[float, float]]:
     u1, v1, u2, v2 = map(float, rect)
     if mirror:
         u1, u2 = u2, u1
-    return [(u1 / width, 1 - v2 / height), (u2 / width, 1 - v2 / height),
-            (u2 / width, 1 - v1 / height), (u1 / width, 1 - v1 / height)]
+    coords = [(u1 / width, 1 - v2 / height), (u2 / width, 1 - v2 / height),
+              (u2 / width, 1 - v1 / height), (u1 / width, 1 - v1 / height)]
+    quarter_turns = (int(rotation) // 90) % 4
+    return coords[quarter_turns:] + coords[:quarter_turns]
 
 
 def default_box_uv(offset: list[float], size: list[float]) -> dict[str, list[float]]:
@@ -243,11 +259,25 @@ def create_cube(
             obj.data.materials.append(catalog.material(reference))
             material_slots[slot_key] = len(obj.data.materials) - 1
         polygon.material_index = material_slots[slot_key]
-        rect = spec.get("uv", [0, 0, texture_size[0], texture_size[1]])
+        face_texture_size = tuple(spec.get("texture_size", texture_size))
+        rect = spec.get("uv", [0, 0, face_texture_size[0], face_texture_size[1]])
         if len(rect) == 2:
             uv_size = spec.get("uv_size", [texture_size[0], texture_size[1]])
             rect = [rect[0], rect[1], rect[0] + uv_size[0], rect[1] + uv_size[1]]
-        coords = uv_quad(rect, texture_size[0], texture_size[1], mirror)
+        uv_scale = spec.get("uv_scale", [1, 1])
+        rect = [
+            float(rect[0]) * float(uv_scale[0]),
+            float(rect[1]) * float(uv_scale[1]),
+            float(rect[2]) * float(uv_scale[0]),
+            float(rect[3]) * float(uv_scale[1]),
+        ]
+        coords = uv_quad(
+            rect,
+            face_texture_size[0],
+            face_texture_size[1],
+            mirror,
+            int(spec.get("uv_rotation", 0)),
+        )
         for loop_index, uv in zip(polygon.loop_indices, coords):
             uv_layer.data[loop_index].uv = uv
     return obj
@@ -270,7 +300,12 @@ def bedrock_faces(cube: dict[str, Any], size: list[float]) -> dict[str, dict[str
             if isinstance(entry, list):
                 result[name] = {"uv": entry}
             elif isinstance(entry, dict) and "uv" in entry:
-                result[name] = {"uv": entry["uv"], "uv_size": entry.get("uv_size", size[:2])}
+                result[name] = {
+                    "uv": entry["uv"],
+                    "uv_size": entry.get("uv_size", size[:2]),
+                    "uv_rotation": entry.get("uv_rotation", 0),
+                    "material_instance": entry.get("material_instance"),
+                }
         return result
     return {name: {"uv": [0, 0, 16, 16]} for name in FACE_NAMES}
 
@@ -280,6 +315,7 @@ def import_bedrock(
     args: argparse.Namespace,
     catalog: TextureCatalog,
     atlas_reference_override: str | None = None,
+    material_references: dict[str, str] | None = None,
 ) -> list[bpy.types.Object]:
     geometries = bedrock_geometries(data)
     if args.geometry:
@@ -337,8 +373,24 @@ def import_bedrock(
             lower = [origin[i] - inflate for i in range(3)]
             upper = [origin[i] + size[i] + inflate for i in range(3)]
             faces = bedrock_faces(cube, size)
-            for face in faces.values():
-                face["texture"] = str(atlas_path) if atlas_path else atlas_reference
+            for face_name, face in faces.items():
+                instance_name = face.get("material_instance")
+                if not instance_name and material_references and face_name in material_references:
+                    instance_name = face_name
+                reference = None
+                if material_references:
+                    reference = material_references.get(str(instance_name)) if instance_name else None
+                    reference = reference or material_references.get("*")
+                reference = reference or (str(atlas_path) if atlas_path else atlas_reference)
+                face["texture"] = reference
+                actual_size = catalog.first_image_size(reference)
+                if actual_size:
+                    face["texture_size"] = actual_size
+                    if tuple(map(float, actual_size)) != tuple(map(float, texture_size)):
+                        face["uv_scale"] = [
+                            float(actual_size[0]) / texture_size[0],
+                            float(actual_size[1]) / texture_size[1],
+                        ]
             obj = create_cube(
                 f"{bone_node.name}:cube_{index}", lower, upper, faces,
                 catalog, texture_size, bool(cube.get("mirror", bone.get("mirror", False))),
@@ -436,8 +488,26 @@ def legacy_block_materials(resource_pack: Path | None, identifier: str) -> dict[
 def import_bedrock_block(data: dict[str, Any], args: argparse.Namespace, catalog: TextureCatalog) -> list[bpy.types.Object]:
     block = data.get("minecraft:block", {})
     components = block.get("components", {})
+    components = dict(components) if isinstance(components, dict) else {}
     identifier = str(block.get("description", {}).get("identifier", args.model.stem))
     materials = components.get("minecraft:material_instances", {})
+    if not isinstance(materials, dict) or not materials:
+        # Catalog renders need one representative state. When a block only
+        # supplies materials through permutations (for example staged crops),
+        # prefer the last material-bearing permutation, which is conventionally
+        # the mature/complete state, and overlay it on the base components.
+        permutations = block.get("permutations", [])
+        for permutation in reversed(permutations if isinstance(permutations, list) else []):
+            permutation_components = permutation.get("components", {}) if isinstance(permutation, dict) else {}
+            permutation_materials = (
+                permutation_components.get("minecraft:material_instances", {})
+                if isinstance(permutation_components, dict)
+                else {}
+            )
+            if isinstance(permutation_materials, dict) and permutation_materials:
+                components.update(permutation_components)
+                materials = permutation_materials
+                break
     resource_pack = resource_pack_path(args)
     if not isinstance(materials, dict) or not materials:
         materials = legacy_block_materials(resource_pack, identifier)
@@ -455,6 +525,12 @@ def import_bedrock_block(data: dict[str, Any], args: argparse.Namespace, catalog
             raise RuntimeError(f"Bedrock block {identifier} has no texture for face {face_name}")
         return terrain.get(key, key)
 
+    material_references: dict[str, str] = {}
+    for material_name, entry in materials.items():
+        key = entry.get("texture") if isinstance(entry, dict) else entry
+        if isinstance(key, str):
+            material_references[str(material_name)] = terrain.get(key, key)
+
     geometry = components.get("minecraft:geometry", "minecraft:geometry.full_block")
     geometry_identifier = geometry.get("identifier") if isinstance(geometry, dict) else geometry
     if geometry_identifier in ("minecraft:geometry.full_block", "geometry.full_block", None):
@@ -471,7 +547,13 @@ def import_bedrock_block(data: dict[str, Any], args: argparse.Namespace, catalog
     previous_geometry = args.geometry
     args.geometry = str(geometry_identifier)
     try:
-        return import_bedrock(geometry_data, args, catalog, texture_for("north"))
+        return import_bedrock(
+            geometry_data,
+            args,
+            catalog,
+            texture_for("north"),
+            material_references,
+        )
     finally:
         args.geometry = previous_geometry
 
@@ -695,6 +777,114 @@ def root_objects(objects: list[bpy.types.Object]) -> list[bpy.types.Object]:
     return [obj for obj in objects if obj.parent not in supplied]
 
 
+def object_bounds(objects: list[bpy.types.Object]) -> tuple[Vector, Vector]:
+    points: list[Vector] = []
+    bpy.context.view_layer.update()
+    for obj in objects:
+        if obj.type == "MESH" and not obj.hide_render:
+            points.extend(obj.matrix_world @ Vector(corner) for corner in obj.bound_box)
+    if not points:
+        raise RuntimeError("A structure item contains no visible mesh geometry")
+    return (
+        Vector((min(p.x for p in points), min(p.y for p in points), min(p.z for p in points))),
+        Vector((max(p.x for p in points), max(p.y for p in points), max(p.z for p in points))),
+    )
+
+
+def hide_item_bones(objects: list[bpy.types.Object], names: list[str]) -> None:
+    if not names:
+        return
+    lookup: dict[str, bpy.types.Object] = {}
+    for obj in objects:
+        if obj.type == "EMPTY" and (obj.name.startswith("Bone:") or obj.name.startswith("Group:")):
+            display = re.sub(r"\.\d{3}$", "", obj.name.split(":", 1)[1])
+            lookup[canonical(display)] = obj
+    missing = [name for name in names if canonical(name) not in lookup]
+    if missing:
+        available = sorted(obj.name.split(":", 1)[-1] for obj in lookup.values())
+        raise RuntimeError(f"Structure item bone/group not found: {missing}. Available: {available}")
+    for name in names:
+        for obj in descendants(lookup[canonical(name)]):
+            obj.hide_render = True
+
+
+def manifest_path(base: Path, value: str) -> Path:
+    path = Path(value).expanduser()
+    return path.resolve() if path.is_absolute() else (base / path).resolve()
+
+
+def place_structure_item(
+    objects: list[bpy.types.Object],
+    name: str,
+    position: list[float],
+    rotation: list[float],
+    vertical_align: str,
+) -> bpy.types.Object:
+    if len(position) != 3 or len(rotation) != 3:
+        raise RuntimeError(f"Structure item {name!r} requires three-value position and rotation arrays")
+    root = bpy.data.objects.new("StructureItem:" + name, None)
+    bpy.context.collection.objects.link(root)
+    for obj in root_objects(objects):
+        parent_keep_world(obj, root)
+    root.rotation_euler = model_rotation(rotation)
+    bpy.context.view_layer.update()
+    lower, upper = object_bounds(objects)
+    target = model_to_blender((float(position[0]) * 16, float(position[1]) * 16, float(position[2]) * 16))
+    current_center = (lower + upper) / 2
+    if vertical_align == "bottom":
+        vertical_shift = target.z - lower.z
+    elif vertical_align == "center":
+        vertical_shift = target.z + 8 - current_center.z
+    elif vertical_align == "top":
+        vertical_shift = target.z + 16 - upper.z
+    else:
+        raise RuntimeError(f"Unknown vertical_align {vertical_align!r} for structure item {name!r}")
+    root.location += Vector((target.x - current_center.x, target.y - current_center.y, vertical_shift))
+    bpy.context.view_layer.update()
+    return root
+
+
+def import_structure(args: argparse.Namespace) -> list[bpy.types.Object]:
+    manifest = load_json(args.manifest)
+    items = manifest.get("blocks")
+    if not isinstance(items, list) or not items:
+        raise RuntimeError("Structure manifest requires a non-empty 'blocks' array")
+    base = args.manifest.parent
+    imported: list[bpy.types.Object] = []
+    for index, entry in enumerate(items):
+        if not isinstance(entry, dict) or not entry.get("model"):
+            raise RuntimeError(f"Invalid structure item at index {index}: expected an object with 'model'")
+        item_args = copy.copy(args)
+        item_args.manifest = None
+        item_args.model = manifest_path(base, str(entry["model"]))
+        if not item_args.model.is_file():
+            raise RuntimeError(f"Structure model not found: {item_args.model}")
+        resource_value = entry.get("resource_pack")
+        item_args.resource_pack = manifest_path(base, str(resource_value)) if resource_value else None
+        item_args.geometry = entry.get("geometry")
+        texture_values = entry.get("textures")
+        if isinstance(texture_values, str):
+            texture_values = [texture_values]
+        if not texture_values and item_args.resource_pack:
+            texture_values = [str(item_args.resource_pack / "textures" / "blocks")]
+        texture_paths = [manifest_path(base, str(value)) for value in (texture_values or [])]
+        catalog = TextureCatalog(texture_paths, args.texture_filter, texture_emission(args.lighting))
+        objects = import_model(item_args, catalog)
+        if not objects:
+            raise RuntimeError(f"Structure item created no objects: {item_args.model}")
+        hide_item_bones(objects, [str(value) for value in entry.get("hide_bones", [])])
+        name = str(entry.get("name") or item_args.model.stem)
+        root = place_structure_item(
+            objects,
+            name,
+            [float(value) for value in entry.get("position", [0, 0, 0])],
+            [float(value) for value in entry.get("rotation", [0, 0, 0])],
+            str(entry.get("vertical_align", "bottom")),
+        )
+        imported.extend([*objects, root])
+    return imported
+
+
 def apply_model_rotation(objects: list[bpy.types.Object], value: str) -> bpy.types.Object:
     root = bpy.data.objects.new("DoriosRenderRoot", None)
     bpy.context.collection.objects.link(root)
@@ -780,6 +970,14 @@ def add_area(name: str, location: Vector, target: Vector, energy: float, size: f
     light.rotation_euler = (target - location).to_track_quat("-Z", "Y").to_euler()
 
 
+def uses_original_directional_light(lighting: str) -> bool:
+    return lighting in {"left_light", "right_light", "studio"}
+
+
+def texture_emission(lighting: str) -> float:
+    return 0.12 if uses_original_directional_light(lighting) else 0.16
+
+
 def setup_lighting(args: argparse.Namespace, lower: Vector, upper: Vector) -> bpy.types.Object | None:
     center = (lower + upper) / 2
     span = max((upper - lower).length, 1)
@@ -790,8 +988,35 @@ def setup_lighting(args: argparse.Namespace, lower: Vector, upper: Vector) -> bp
         add_area("Key", center + Vector((span, -span, span * 1.6)), center, 12000 * multiplier, span, not args.no_shadows)
         add_area("Rim", center + Vector((-span, span, span)), center, 5000 * multiplier, span, not args.no_shadows)
     else:
-        add_area("Key", center + Vector((span, -span, span * 2)), center, 10000 * multiplier, span * 1.5, not args.no_shadows)
-        add_area("Fill", center + Vector((-span, -span * 0.5, span)), center, 3500 * multiplier, span * 2, not args.no_shadows)
+        azimuth, _ = (math.radians(value) for value in view_angles(args.view, args.azimuth, args.elevation))
+        camera_horizontal = Vector((math.cos(azimuth), math.sin(azimuth), 0))
+        camera_side = Vector((-math.sin(azimuth), math.cos(azimuth), 0))
+        if args.lighting == "balanced":
+            key_depth = -camera_horizontal * span * 0.25 + Vector((0, 0, span * 1.2))
+            add_area("LeftKey", center - camera_side * span * 1.2 + key_depth, center, 2800 * multiplier, span * 1.8, not args.no_shadows)
+            add_area("RightKey", center + camera_side * span * 1.2 + key_depth, center, 2800 * multiplier, span * 1.8, not args.no_shadows)
+            add_area(
+                "FrontFill",
+                center + camera_horizontal * span * 1.05 + Vector((0, 0, span * 0.45)),
+                center,
+                1400 * multiplier,
+                span * 2.3,
+                not args.no_shadows,
+            )
+        else:
+            key_side = camera_side if args.lighting == "right_light" else -camera_side
+            fill_side = -key_side
+            key_location = center + key_side * span * math.sqrt(2) + Vector((0, 0, span * 2))
+            opposite_location = center - key_side * span * math.sqrt(2) + Vector((0, 0, span * 2))
+            fill_location = (
+                center
+                - camera_horizontal * span * (3 / (2 * math.sqrt(2)))
+                + fill_side * span * (1 / (2 * math.sqrt(2)))
+                + Vector((0, 0, span))
+            )
+            add_area("Key", key_location, center, 10000 * multiplier, span * 1.5, not args.no_shadows)
+            add_area("OppositeFill", opposite_location, center, 2000 * multiplier, span * 1.5, not args.no_shadows)
+            add_area("Fill", fill_location, center, 3500 * multiplier, span * 2, not args.no_shadows)
     ground_enabled = args.ground == "on" or (args.ground == "auto" and args.background != "transparent")
     if not ground_enabled:
         return None
@@ -824,7 +1049,13 @@ def setup_scene(args: argparse.Namespace) -> None:
     background = world.node_tree.nodes.get("Background")
     if background:
         background.inputs["Color"].default_value = (0.04, 0.045, 0.055, 1) if args.background == "transparent" else hex_color(args.background)
-        background.inputs["Strength"].default_value = 0.7 if args.lighting != "flat" else 1.0
+        if args.lighting == "flat":
+            world_strength = 1.0
+        elif uses_original_directional_light(args.lighting):
+            world_strength = 0.7
+        else:
+            world_strength = 0.83
+        background.inputs["Strength"].default_value = world_strength
     try:
         scene.view_settings.look = "AgX - Medium High Contrast"
     except TypeError:
@@ -832,6 +1063,7 @@ def setup_scene(args: argparse.Namespace) -> None:
             scene.view_settings.look = "Medium High Contrast"
         except TypeError:
             pass
+    scene.view_settings.exposure = 0.20 if uses_original_directional_light(args.lighting) else 0.42
 
 
 def clear_startup_scene() -> None:
@@ -841,15 +1073,28 @@ def clear_startup_scene() -> None:
 
 def main() -> None:
     args = arguments()
-    args.model = args.model.resolve()
+    if args.model:
+        args.model = args.model.resolve()
+    else:
+        args.manifest = args.manifest.resolve()
     args.output = args.output.resolve()
     clear_startup_scene()
     setup_scene(args)
-    catalog = TextureCatalog([path.resolve() for path in args.textures], args.texture_filter)
-    imported = import_model(args, catalog)
+    if args.manifest:
+        imported = import_structure(args)
+    else:
+        catalog = TextureCatalog(
+            [path.resolve() for path in args.textures],
+            args.texture_filter,
+            texture_emission(args.lighting),
+        )
+        imported = import_model(args, catalog)
     if not imported:
         raise RuntimeError("The model importer created no objects")
-    apply_bones(args)
+    if args.manifest and (args.hide_bone or args.bone_rotation):
+        raise RuntimeError("Use per-item hide_bones/rotation values inside a structure manifest")
+    if not args.manifest:
+        apply_bones(args)
     apply_model_rotation(imported, args.model_rotation)
     bpy.context.view_layer.update()
     lower, upper = visible_bounds()

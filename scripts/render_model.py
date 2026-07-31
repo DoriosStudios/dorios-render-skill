@@ -11,7 +11,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-from nearest_resize import resize_png_nearest
+from nearest_resize import center_png_alpha, resize_png_nearest
 
 
 def blender_candidates() -> list[Path]:
@@ -50,9 +50,13 @@ def find_blender(explicit: str | None) -> Path:
 
 def parser() -> argparse.ArgumentParser:
     result = argparse.ArgumentParser(description=__doc__)
-    result.add_argument("--model", required=True)
+    source = result.add_mutually_exclusive_group(required=True)
+    source.add_argument("--model")
+    source.add_argument("--manifest", help="JSON/JSONC multi-block scene manifest")
     result.add_argument("--textures", nargs="*", default=[])
     result.add_argument("--output", required=True)
+    result.add_argument("--source-output", help="Optional path that keeps the high-resolution Blender render")
+    result.add_argument("--no-center-content", action="store_true", help="Do not center transparent visible bounds")
     result.add_argument("--view", default="iso-ne", choices=[
         "iso-ne", "iso-nw", "iso-se", "iso-sw", "front", "back", "left", "right", "top", "custom"
     ])
@@ -66,10 +70,14 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--ortho-scale", type=float)
     result.add_argument("--resolution", default="80x80")
     result.add_argument("--render-resolution", help="High-resolution Blender source; defaults to at least 1024 pixels")
-    result.add_argument("--margin", type=float, default=0.14)
+    result.add_argument("--margin", type=float, default=0.025)
     result.add_argument("--samples", type=int, default=64)
     result.add_argument("--background", default="transparent")
-    result.add_argument("--lighting", choices=["studio", "flat", "dramatic"], default="studio")
+    result.add_argument(
+        "--lighting",
+        choices=["balanced", "left_light", "right_light", "studio", "flat", "dramatic"],
+        default="right_light",
+    )
     result.add_argument("--ground", choices=["auto", "on", "off"], default="auto")
     result.add_argument("--no-shadows", action="store_true")
     result.add_argument("--texture-filter", choices=["closest", "linear"], default="closest")
@@ -105,15 +113,19 @@ def source_dimensions(final: tuple[int, int], explicit: str | None) -> tuple[int
 
 def main() -> None:
     args = parser().parse_args()
-    model = Path(args.model).expanduser().resolve()
-    if not model.is_file():
-        raise SystemExit(f"Model not found: {model}")
+    source_path = Path(args.model or args.manifest).expanduser().resolve()
+    if not source_path.is_file():
+        label = "Model" if args.model else "Manifest"
+        raise SystemExit(f"{label} not found: {source_path}")
     texture_paths = [Path(item).expanduser().resolve() for item in args.textures]
     missing = [path for path in texture_paths if not path.exists()]
     if missing:
         raise SystemExit("Texture path not found: " + ", ".join(map(str, missing)))
     output = Path(args.output).expanduser().resolve()
     output.parent.mkdir(parents=True, exist_ok=True)
+    source_output = Path(args.source_output).expanduser().resolve() if args.source_output else None
+    if source_output:
+        source_output.parent.mkdir(parents=True, exist_ok=True)
     final_size = dimensions(args.resolution, "resolution")
     render_size = source_dimensions(final_size, args.render_resolution)
     blender = Path(args.blender) if args.dry_run and args.blender else (
@@ -122,9 +134,13 @@ def main() -> None:
     worker = Path(__file__).with_name("blender_render.py").resolve()
     needs_resize = render_size != final_size
     with tempfile.TemporaryDirectory(prefix="dorios-render-") as temporary:
-        render_output = Path(temporary) / "source.png" if needs_resize else output
+        if needs_resize:
+            render_output = source_output or (Path(temporary) / "source.png")
+        else:
+            render_output = output
         forwarded = [
-            "--model", str(model), "--output", str(render_output), "--view", args.view,
+            "--manifest" if args.manifest else "--model", str(source_path),
+            "--output", str(render_output), "--view", args.view,
             "--azimuth", str(args.azimuth), "--elevation", str(args.elevation),
             "--model-rotation", args.model_rotation,
             "--resolution", f"{render_size[0]}x{render_size[1]}",
@@ -154,15 +170,22 @@ def main() -> None:
             print(subprocess.list2cmdline(command))
             if needs_resize:
                 print(f"Then resize with nearest neighbour: {render_size[0]}x{render_size[1]} -> {final_size[0]}x{final_size[1]}")
+            if args.background == "transparent" and not args.no_center_content:
+                print("Then center the non-zero alpha bounds in the unchanged canvas")
             return
-        print(f"Rendering {model.name} at {render_size[0]}x{render_size[1]} with Blender...")
+        print(f"Rendering {source_path.name} at {render_size[0]}x{render_size[1]} with Blender...")
         completed = subprocess.run(command, check=False)
         if completed.returncode:
             raise SystemExit(completed.returncode)
         if not render_output.is_file() or render_output.stat().st_size == 0:
             raise SystemExit(f"Blender finished without creating a valid source render: {render_output}")
+        if args.background == "transparent" and not args.no_center_content:
+            shift_x, shift_y = center_png_alpha(render_output, render_output)
+            print(f"Centered visible alpha bounds by {shift_x},{shift_y} source pixels")
         if needs_resize:
             resize_png_nearest(render_output, output, final_size[0], final_size[1])
+        elif source_output and source_output != output:
+            shutil.copyfile(output, source_output)
     if not output.is_file() or output.stat().st_size == 0:
         raise SystemExit(f"Post-processing finished without creating a valid output: {output}")
     print(f"Created: {output}")
