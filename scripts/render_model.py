@@ -65,6 +65,8 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--model-rotation", default="0,0,0")
     result.add_argument("--hide-bone", action="append", default=[])
     result.add_argument("--bone-rotation", action="append", default=[])
+    result.add_argument("--bone-position", action="append", default=[])
+    result.add_argument("--bone-scale", action="append", default=[])
     result.add_argument("--geometry")
     result.add_argument("--resource-pack", help="Bedrock RP folder; inferred from a sibling BP folder when omitted")
     result.add_argument("--ortho-scale", type=float)
@@ -86,6 +88,12 @@ def parser() -> argparse.ArgumentParser:
         type=int,
         default=90,
         help="Quarter-turn correction for Bedrock up/down faces; set 0 for models authored in renderer order",
+    )
+    result.add_argument(
+        "--material-permutation",
+        choices=["auto", "base", "last"],
+        default="auto",
+        help="Bedrock block material state: base components, last material permutation, or automatic",
     )
     result.add_argument("--blender")
     result.add_argument("--dry-run", action="store_true")
@@ -154,6 +162,7 @@ def main() -> None:
             "--background", args.background, "--lighting", args.lighting,
             "--ground", args.ground, "--texture-filter", args.texture_filter,
             "--bedrock-horizontal-uv-rotation", str(args.bedrock_horizontal_uv_rotation),
+            "--material-permutation", args.material_permutation,
         ]
         if texture_paths:
             forwarded.extend(["--textures", *map(str, texture_paths)])
@@ -170,6 +179,10 @@ def main() -> None:
             forwarded.extend(["--hide-bone", name])
         for rotation in args.bone_rotation:
             forwarded.extend(["--bone-rotation", rotation])
+        for position in args.bone_position:
+            forwarded.extend(["--bone-position", position])
+        for scale in args.bone_scale:
+            forwarded.extend(["--bone-scale", scale])
         if args.no_shadows:
             forwarded.append("--no-shadows")
         command = [str(blender), "--background", "--factory-startup", "--python", str(worker), "--", *forwarded]

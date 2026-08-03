@@ -53,6 +53,13 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--jobs", type=int, default=1, help="Concurrent Blender processes (default: 1)")
     parser.add_argument("--skip-existing", action="store_true", help="Keep PNG files already present")
+    parser.add_argument(
+        "--material-permutation",
+        choices=["auto", "base", "last"],
+        default="auto",
+        help="Render base materials or the last material-bearing block permutation",
+    )
+    parser.add_argument("--output-suffix", default="", help="Suffix inserted before .png, such as _off or _on")
     return parser.parse_args()
 
 
@@ -151,7 +158,7 @@ def main() -> None:
                 if not texture_path.exists():
                     raise SystemExit(f"Override texture not found for {identifier}: {texture_path}")
                 job_texture_roots.append(texture_path)
-        filename = identifier.split(":")[-1] + ".png"
+        filename = identifier.split(":")[-1] + args.output_suffix + ".png"
         destination = output / filename
         collision_key = filename.casefold()
         previous = destinations.get(collision_key)
@@ -172,6 +179,7 @@ def main() -> None:
             "--background", args.background,
             "--lighting", str(settings.get("lighting", args.lighting)),
             "--texture-filter", "closest",
+            "--material-permutation", args.material_permutation,
         ]
         if "model_rotation" in settings:
             command.extend(["--model-rotation", str(settings["model_rotation"])])

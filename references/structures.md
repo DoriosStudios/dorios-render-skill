@@ -28,6 +28,10 @@ Optional per-item fields:
 - `rotation`: model X,Y,Z degrees; default `[0,0,0]`.
 - `geometry`: explicit geometry identifier for multi-geometry files.
 - `hide_bones`: group/bone names hidden only on that item. Placement is anchored from the complete model before those bones are hidden, so asymmetric T/corner pipes remain centered in their grid cell.
+- `bone_positions`: one `"bone=x,y,z"` string or an array of them; applies additive model-space translations before placement, useful for reproducing a static state from an entity animation.
+- `bone_scales`: one `"bone=x,y,z"` string or an array; applies model-space scale around the bone pivot before placement, useful for static beams, pistons, and other animated-length parts.
+- `object_positions`: one `"object=x,y,z"` string or an array; applies a model-space offset to a specific generated mesh object such as `tower:cube_17`, useful for a render-only correction without modifying the source model.
+- `anchor_visible_bounds`: when `true`, hide optional bones before calculating item placement. Use it for variable-size models whose selected bones define their actual footprint; leave it `false` for asymmetric connection models such as pipes.
 - `vertical_align`: `bottom` (default), `center`, or `top` within the 16-unit cell; use `center` for cables or other floating components.
 - `bedrock_horizontal_uv_rotation`: override the default 90-degree `up`/`down` Bedrock UV correction for this item.
 

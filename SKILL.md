@@ -36,6 +36,8 @@ The batch renderer loads both `RP/textures/blocks` and `RP/textures/entity`. Thi
 
 For large packs, repeat `--exclude-path <fragment>` to omit model families, repeat `--include-path <fragment>` to render only selected families, and use `--include-identifier-suffix <suffix>` or `--exclude-identifier-suffix <suffix>` for identifier-based selection such as rendering only `_seeds` definitions from a crop folder. Use `--jobs <count>` for controlled concurrent Blender processes, and add `--skip-existing` to resume an interrupted batch without replacing completed PNGs. The batch renderer rejects duplicate identifier-derived filenames before rendering.
 
+For blocks with visual material states in permutations, use `--material-permutation base --output-suffix _off` for the component textures and `--material-permutation last --output-suffix _on` for the last material-bearing permutation. This produces both states without editing the source block definitions.
+
 The batch renderer automatically loads `<pack-root>/Assets/render_overrides.json` when present, or accepts `--overrides <file>`. Use `path_rules` for family-wide settings and `blocks` keyed by full identifier for `model_rotation`, `ortho_scale`, `margin`, `resolution`, `view`, `lighting`, `hide_bones`, or `bone_rotations` exceptions. This keeps verified pack-specific framing, state visibility, and orientation reproducible.
 
 For a placed multi-block composition, create a temporary JSON/JSONC manifest and pass `--manifest` instead of `--model`. Read [references/structures.md](references/structures.md) before creating the manifest. Use `--source-output <name_hd.png>` to retain the high-resolution Blender source while `--output` receives the Nearest Neighbour result.
@@ -58,7 +60,10 @@ Useful options:
 - `--model-rotation x,y,z` to rotate the complete model in degrees
 - `--hide-bone <name>` to hide a bone/group and its descendants; repeat as needed
 - `--bone-rotation "bone=x,y,z"` to override a bone/group Euler rotation; repeat as needed
+- `--bone-position "bone=x,y,z"` to add a model-space translation to a JSON/BBMODEL bone/group; repeat as needed
+- `--bone-scale "bone=x,y,z"` to set a JSON/BBMODEL bone/group scale around its pivot; repeat as needed
 - `--geometry <identifier>` to choose one geometry from a multi-geometry Bedrock file
+- `--material-permutation auto|base|last` to choose the Bedrock block material state
 - `--resource-pack <RP-folder>` to resolve Bedrock block geometry and `terrain_texture.json`; inferred for sibling `BP`/`RP` packs
 - `--ortho-scale <number>` to override automatic framing
 - `--resolution WIDTHxHEIGHT` for the delivered PNG (default `80x80`)

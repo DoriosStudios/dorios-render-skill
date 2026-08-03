@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any
 
 import bpy
-from mathutils import Vector
+from mathutils import Euler, Vector
 
 SCRIPT_DIRECTORY = Path(__file__).resolve().parent
 if str(SCRIPT_DIRECTORY) not in sys.path:
@@ -39,6 +39,8 @@ def arguments() -> argparse.Namespace:
     parser.add_argument("--model-rotation", default="0,0,0")
     parser.add_argument("--hide-bone", action="append", default=[])
     parser.add_argument("--bone-rotation", action="append", default=[])
+    parser.add_argument("--bone-position", action="append", default=[])
+    parser.add_argument("--bone-scale", action="append", default=[])
     parser.add_argument("--geometry")
     parser.add_argument("--resource-pack", type=Path)
     parser.add_argument("--ortho-scale", type=float)
@@ -55,6 +57,7 @@ def arguments() -> argparse.Namespace:
     parser.add_argument("--no-shadows", action="store_true")
     parser.add_argument("--texture-filter", default="closest")
     parser.add_argument("--bedrock-horizontal-uv-rotation", type=int, default=90)
+    parser.add_argument("--material-permutation", choices=["auto", "base", "last"], default="auto")
     return parser.parse_args(argv)
 
 
@@ -74,6 +77,10 @@ def model_to_blender(point: list[float] | tuple[float, ...]) -> Vector:
 
 def model_rotation(value: list[float] | tuple[float, ...]) -> tuple[float, float, float]:
     return tuple(math.radians(item) for item in (float(value[0]), -float(value[2]), float(value[1])))
+
+
+def model_scale(value: list[float] | tuple[float, ...]) -> Vector:
+    return Vector((float(value[0]), float(value[2]), float(value[1])))
 
 
 def canonical(value: str) -> str:
@@ -356,6 +363,11 @@ def import_bedrock(
         bpy.context.collection.objects.link(node)
         nodes[canonical(name)] = node
         base_rotations[canonical(name)] = bone.get("rotation", [0, 0, 0])
+    # Evaluate authored pivot locations before linking child bones to their
+    # parents.  parent_keep_world() reads matrix_world, which is otherwise
+    # still cached at the origin and makes animated child bones rotate around
+    # (0, 0, 0) instead of their Bedrock pivot.
+    bpy.context.view_layer.update()
     for bone in bones:
         key = canonical(str(bone.get("name", "")))
         parent_name = bone.get("parent")
@@ -405,14 +417,15 @@ def import_bedrock(
             )
             rotation = cube.get("rotation", [0, 0, 0])
             if any(float(value) for value in rotation):
-                pivot = bpy.data.objects.new(obj.name + ":pivot", None)
-                pivot.location = model_to_blender(cube.get("pivot", bone.get("pivot", [0, 0, 0])))
-                bpy.context.collection.objects.link(pivot)
-                parent_keep_world(pivot, bone_node)
-                parent_keep_world(obj, pivot)
-                pivot.rotation_euler = model_rotation(rotation)
-            else:
-                parent_keep_world(obj, bone_node)
+                # Bake per-cube rotations into the mesh. Temporary pivot
+                # objects are fragile when a model is subsequently grouped
+                # into a multi-block scene and previously caused rotated
+                # Bedrock cubes to lose or misapply their transforms.
+                pivot = model_to_blender(cube.get("pivot", bone.get("pivot", [0, 0, 0])))
+                matrix = Euler(model_rotation(rotation), "XYZ").to_matrix()
+                for vertex in obj.data.vertices:
+                    vertex.co = pivot + matrix @ (vertex.co - pivot)
+            parent_keep_world(obj, bone_node)
             created.append(obj)
     for key, rotation in base_rotations.items():
         nodes[key].rotation_euler = model_rotation(rotation)
@@ -499,7 +512,10 @@ def import_bedrock_block(data: dict[str, Any], args: argparse.Namespace, catalog
     components = dict(components) if isinstance(components, dict) else {}
     identifier = str(block.get("description", {}).get("identifier", args.model.stem))
     materials = components.get("minecraft:material_instances", {})
-    if not isinstance(materials, dict) or not materials:
+    select_last_materials = args.material_permutation == "last" or (
+        args.material_permutation == "auto" and (not isinstance(materials, dict) or not materials)
+    )
+    if select_last_materials:
         # Catalog renders need one representative state. When a block only
         # supplies materials through permutations (for example staged crops),
         # prefer the last material-bearing permutation, which is conventionally
@@ -756,7 +772,12 @@ def available_bones() -> dict[str, tuple[str, Any]]:
 
 def apply_bones(args: argparse.Namespace) -> None:
     bones = available_bones()
-    requested = [*args.hide_bone, *(item.split("=", 1)[0] for item in args.bone_rotation)]
+    requested = [
+        *args.hide_bone,
+        *(item.split("=", 1)[0] for item in args.bone_rotation),
+        *(item.split("=", 1)[0] for item in args.bone_position),
+        *(item.split("=", 1)[0] for item in args.bone_scale),
+    ]
     missing = [name for name in requested if canonical(name) not in bones]
     if missing:
         names = sorted(display for display, _ in bones.values())
@@ -778,6 +799,22 @@ def apply_bones(args: argparse.Namespace) -> None:
         _, target = bones[canonical(name)]
         target.rotation_mode = "XYZ"
         target.rotation_euler = model_rotation(triple(value, "bone rotation"))
+    for spec in args.bone_position:
+        if "=" not in spec:
+            raise RuntimeError(f"Invalid --bone-position {spec!r}; expected bone=x,y,z")
+        name, value = spec.split("=", 1)
+        _, target = bones[canonical(name)]
+        if not isinstance(target, bpy.types.Object):
+            raise RuntimeError("--bone-position currently supports JSON/BBMODEL bone groups, not armature pose bones")
+        target.location += model_to_blender(triple(value, "bone position"))
+    for spec in args.bone_scale:
+        if "=" not in spec:
+            raise RuntimeError(f"Invalid --bone-scale {spec!r}; expected bone=x,y,z")
+        name, value = spec.split("=", 1)
+        _, target = bones[canonical(name)]
+        if not isinstance(target, bpy.types.Object):
+            raise RuntimeError("--bone-scale currently supports JSON/BBMODEL bone groups, not armature pose bones")
+        target.scale = model_scale(triple(value, "bone scale"))
 
 
 def root_objects(objects: list[bpy.types.Object]) -> list[bpy.types.Object]:
@@ -814,6 +851,74 @@ def hide_item_bones(objects: list[bpy.types.Object], names: list[str]) -> None:
     for name in names:
         for obj in descendants(lookup[canonical(name)]):
             obj.hide_render = True
+
+
+def position_item_bones(objects: list[bpy.types.Object], specs: list[str]) -> None:
+    if not specs:
+        return
+    lookup: dict[str, bpy.types.Object] = {}
+    for obj in objects:
+        if obj.type == "EMPTY" and (obj.name.startswith("Bone:") or obj.name.startswith("Group:")):
+            display = re.sub(r"\.\d{3}$", "", obj.name.split(":", 1)[1])
+            lookup[canonical(display)] = obj
+    requested = [spec.split("=", 1)[0] for spec in specs]
+    missing = [name for name in requested if canonical(name) not in lookup]
+    if missing:
+        available = sorted(obj.name.split(":", 1)[-1] for obj in lookup.values())
+        raise RuntimeError(f"Structure item bone/group not found: {missing}. Available: {available}")
+    for spec in specs:
+        if "=" not in spec:
+            raise RuntimeError(f"Invalid structure bone position {spec!r}; expected bone=x,y,z")
+        name, value = spec.split("=", 1)
+        lookup[canonical(name)].location += model_to_blender(triple(value, "bone position"))
+
+
+def scale_item_bones(objects: list[bpy.types.Object], specs: list[str]) -> None:
+    if not specs:
+        return
+    lookup: dict[str, bpy.types.Object] = {}
+    for obj in objects:
+        if obj.type == "EMPTY" and (obj.name.startswith("Bone:") or obj.name.startswith("Group:")):
+            display = re.sub(r"\.\d{3}$", "", obj.name.split(":", 1)[1])
+            lookup[canonical(display)] = obj
+    requested = [spec.split("=", 1)[0] for spec in specs]
+    missing = [name for name in requested if canonical(name) not in lookup]
+    if missing:
+        available = sorted(obj.name.split(":", 1)[-1] for obj in lookup.values())
+        raise RuntimeError(f"Structure item bone/group not found: {missing}. Available: {available}")
+    for spec in specs:
+        if "=" not in spec:
+            raise RuntimeError(f"Invalid structure bone scale {spec!r}; expected bone=x,y,z")
+        name, value = spec.split("=", 1)
+        lookup[canonical(name)].scale = model_scale(triple(value, "bone scale"))
+
+
+def position_item_objects(objects: list[bpy.types.Object], specs: list[str]) -> None:
+    if not specs:
+        return
+    object_key = lambda value: re.sub(r"[^a-z0-9]+", "", value.lower())
+    lookup: dict[str, bpy.types.Object] = {}
+    for obj in objects:
+        base_name = re.sub(r"\.\d{3}$", "", obj.name)
+        lookup[object_key(base_name)] = obj
+        if base_name.startswith(("Bone:", "Group:")):
+            lookup[object_key(base_name.split(":", 1)[1])] = obj
+    requested = [spec.split("=", 1)[0] for spec in specs]
+    missing = [name for name in requested if object_key(name) not in lookup]
+    if missing:
+        raise RuntimeError(f"Structure item object not found: {missing}")
+    for spec in specs:
+        if "=" not in spec:
+            raise RuntimeError(f"Invalid structure object position {spec!r}; expected object=x,y,z")
+        name, value = spec.split("=", 1)
+        target = lookup[object_key(name)]
+        offset = model_to_blender(triple(value, "object position"))
+        if target.type == "MESH":
+            for vertex in target.data.vertices:
+                vertex.co += offset
+            target.data.update()
+        else:
+            target.location += offset
 
 
 def manifest_path(base: Path, value: str) -> Path:
@@ -890,6 +995,38 @@ def import_structure(args: argparse.Namespace) -> list[bpy.types.Object]:
         if not objects:
             raise RuntimeError(f"Structure item created no objects: {item_args.model}")
         name = str(entry.get("name") or item_args.model.stem)
+        position_specs = entry.get("bone_positions", [])
+        if isinstance(position_specs, str):
+            position_specs = [position_specs]
+        if not isinstance(position_specs, list):
+            raise RuntimeError(f"Structure item {name!r} bone_positions must be a string or array")
+        position_item_bones(objects, [str(value) for value in position_specs])
+        scale_specs = entry.get("bone_scales", [])
+        if isinstance(scale_specs, str):
+            scale_specs = [scale_specs]
+        if not isinstance(scale_specs, list):
+            raise RuntimeError(f"Structure item {name!r} bone_scales must be a string or array")
+        scale_item_bones(objects, [str(value) for value in scale_specs])
+        object_position_specs = entry.get("object_positions", [])
+        if isinstance(object_position_specs, str):
+            object_position_specs = [object_position_specs]
+        if not isinstance(object_position_specs, list):
+            raise RuntimeError(f"Structure item {name!r} object_positions must be a string or array")
+        position_item_objects(objects, [str(value) for value in object_position_specs])
+        # Bone transforms must be evaluated before the imported hierarchy is
+        # parented to its structure root.  Otherwise parent_keep_world() can
+        # read the previous cached matrix and silently discard static
+        # animation states such as a fully-grown bonsai Tree scale.
+        bpy.context.view_layer.update()
+        hidden_values = entry.get("hide_bones", [])
+        if isinstance(hidden_values, str):
+            hidden_values = [hidden_values]
+        if not isinstance(hidden_values, list):
+            raise RuntimeError(f"Structure item {name!r} hide_bones must be a string or array")
+        hidden_names = [str(value) for value in hidden_values]
+        anchor_visible = bool(entry.get("anchor_visible_bounds", False))
+        if anchor_visible:
+            hide_item_bones(objects, hidden_names)
         root = place_structure_item(
             objects,
             name,
@@ -900,7 +1037,8 @@ def import_structure(args: argparse.Namespace) -> list[bpy.types.Object]:
         # Anchor the complete model in its grid cell before hiding optional
         # connection bones.  Otherwise an asymmetric T/corner conduit is
         # re-centered from its visible bounds and no longer meets neighbours.
-        hide_item_bones(objects, [str(value) for value in entry.get("hide_bones", [])])
+        if not anchor_visible:
+            hide_item_bones(objects, hidden_names)
         imported.extend([*objects, root])
     return imported
 
@@ -946,6 +1084,9 @@ def add_camera(args: argparse.Namespace, lower: Vector, upper: Vector) -> bpy.ty
     distance = max(dimensions.length * 3, 10)
     camera_data = bpy.data.cameras.new("Camera")
     camera_data.type = "ORTHO"
+    # Blender's default 1000-unit far clip can discard large multi-block
+    # structures even when their orthographic framing is otherwise correct.
+    camera_data.clip_end = max(1000.0, distance + dimensions.length * 2)
     camera = bpy.data.objects.new("Camera", camera_data)
     bpy.context.collection.objects.link(camera)
     camera.location = center + direction * distance
@@ -1111,13 +1252,17 @@ def main() -> None:
         imported = import_model(args, catalog)
     if not imported:
         raise RuntimeError("The model importer created no objects")
-    if args.manifest and (args.hide_bone or args.bone_rotation):
-        raise RuntimeError("Use per-item hide_bones/rotation values inside a structure manifest")
+    if args.manifest and (args.hide_bone or args.bone_rotation or args.bone_position or args.bone_scale):
+        raise RuntimeError("Use per-item hide_bones/bone_positions/bone_scales/rotation values inside a structure manifest")
     if not args.manifest:
         apply_bones(args)
+        # Evaluate edited bone matrices before apply_model_rotation() wraps
+        # the hierarchy in its camera-facing root.
+        bpy.context.view_layer.update()
     apply_model_rotation(imported, args.model_rotation)
     bpy.context.view_layer.update()
     lower, upper = visible_bounds()
+    print(f"DORIOS_RENDER_BOUNDS: lower={tuple(round(value, 4) for value in lower)} upper={tuple(round(value, 4) for value in upper)}")
     ground = setup_lighting(args, lower, upper)
     add_camera(args, lower, upper)
     args.output.parent.mkdir(parents=True, exist_ok=True)
