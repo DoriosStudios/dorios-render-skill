@@ -417,12 +417,18 @@ def import_bedrock(
             )
             rotation = cube.get("rotation", [0, 0, 0])
             if any(float(value) for value in rotation):
-                # Bake per-cube rotations into the mesh. Temporary pivot
-                # objects are fragile when a model is subsequently grouped
-                # into a multi-block scene and previously caused rotated
-                # Bedrock cubes to lose or misapply their transforms.
+                # Bedrock cube rotations use opposite signed angles around
+                # model X and Z, while Y yaw keeps its sign after conversion
+                # to Blender axes. Bake that convention around the authored
+                # Bedrock pivot. Temporary pivot objects are fragile when a
+                # model is subsequently grouped into a multi-block scene.
                 pivot = model_to_blender(cube.get("pivot", bone.get("pivot", [0, 0, 0])))
-                matrix = Euler(model_rotation(rotation), "XYZ").to_matrix()
+                bedrock_rotation = [
+                    -float(rotation[0]),
+                    float(rotation[1]),
+                    -float(rotation[2]),
+                ]
+                matrix = Euler(model_rotation(bedrock_rotation), "XYZ").to_matrix()
                 for vertex in obj.data.vertices:
                     vertex.co = pivot + matrix @ (vertex.co - pivot)
             parent_keep_world(obj, bone_node)
