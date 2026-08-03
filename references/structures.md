@@ -27,8 +27,11 @@ Optional per-item fields:
 - `textures`: one image/directory or an array; default `<resource_pack>/textures/blocks`.
 - `rotation`: model X,Y,Z degrees; default `[0,0,0]`.
 - `geometry`: explicit geometry identifier for multi-geometry files.
-- `hide_bones`: group/bone names hidden only on that item.
+- `hide_bones`: group/bone names hidden only on that item. Placement is anchored from the complete model before those bones are hidden, so asymmetric T/corner pipes remain centered in their grid cell.
 - `vertical_align`: `bottom` (default), `center`, or `top` within the 16-unit cell; use `center` for cables or other floating components.
+- `bedrock_horizontal_uv_rotation`: override the default 90-degree `up`/`down` Bedrock UV correction for this item.
+
+For repeated items, place shared fields in a top-level `defaults` object. Each block entry inherits those fields and may override any of them, which keeps grid manifests concise.
 
 Render and retain both stages:
 

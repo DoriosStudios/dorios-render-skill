@@ -100,7 +100,12 @@ def main() -> None:
     block_overrides = overrides_data.get("blocks", {}) if isinstance(overrides_data, dict) else {}
     path_rules = overrides_data.get("path_rules", []) if isinstance(overrides_data, dict) else []
     launcher = Path(__file__).with_name("render_model.py").resolve()
-    texture_root = rp / "textures" / "blocks"
+    # Block geometry may reference auxiliary material instances whose images
+    # live outside textures/blocks (for example tank fluid/gas contents in
+    # textures/entity).  Feed both catalogs to the model renderer so those
+    # per-face material instances resolve instead of falling back to magenta.
+    texture_roots = [rp / "textures" / "blocks", rp / "textures" / "entity"]
+    texture_roots = [path for path in texture_roots if path.is_dir()]
     render_jobs: list[tuple[str, Path, list[str]]] = []
     destinations: dict[str, Path] = {}
     skipped = 0
@@ -122,6 +127,30 @@ def main() -> None:
         identifier_override = block_overrides.get(identifier, {}) if isinstance(block_overrides, dict) else {}
         if isinstance(identifier_override, dict):
             settings.update(identifier_override)
+        render_model = model
+        if "model" in settings:
+            render_model = Path(str(settings["model"])).expanduser()
+            if not render_model.is_absolute():
+                render_model = pack_root / render_model
+            render_model = render_model.resolve()
+            if not render_model.is_file():
+                raise SystemExit(f"Override model not found for {identifier}: {render_model}")
+        job_texture_roots = texture_roots
+        if "textures" in settings:
+            texture_values = settings["textures"]
+            if isinstance(texture_values, str):
+                texture_values = [texture_values]
+            if not isinstance(texture_values, list):
+                raise SystemExit(f"Override textures for {identifier} must be a string or array")
+            job_texture_roots = []
+            for value in texture_values:
+                texture_path = Path(str(value)).expanduser()
+                if not texture_path.is_absolute():
+                    texture_path = pack_root / texture_path
+                texture_path = texture_path.resolve()
+                if not texture_path.exists():
+                    raise SystemExit(f"Override texture not found for {identifier}: {texture_path}")
+                job_texture_roots.append(texture_path)
         filename = identifier.split(":")[-1] + ".png"
         destination = output / filename
         collision_key = filename.casefold()
@@ -134,8 +163,8 @@ def main() -> None:
             continue
         command = [
             sys.executable, str(launcher),
-            "--model", str(model),
-            "--textures", str(texture_root),
+            "--model", str(render_model),
+            "--textures", *(str(path) for path in job_texture_roots),
             "--resource-pack", str(rp),
             "--output", str(destination),
             "--view", str(settings.get("view", args.view)),
@@ -150,6 +179,11 @@ def main() -> None:
             command.extend(["--ortho-scale", str(settings["ortho_scale"])])
         if "margin" in settings:
             command.extend(["--margin", str(settings["margin"])])
+        if "bedrock_horizontal_uv_rotation" in settings:
+            command.extend([
+                "--bedrock-horizontal-uv-rotation",
+                str(settings["bedrock_horizontal_uv_rotation"]),
+            ])
         hide_bones = settings.get("hide_bones", [])
         if isinstance(hide_bones, str):
             hide_bones = [hide_bones]
@@ -174,18 +208,32 @@ def main() -> None:
         return identifier, destination, completed
 
     failures: list[str] = []
-    with ThreadPoolExecutor(max_workers=args.jobs) as executor:
-        futures = [executor.submit(render_one, job) for job in render_jobs]
-        for completed_count, future in enumerate(as_completed(futures), 1):
-            identifier, destination, completed = future.result()
-            state = "ok" if completed.returncode == 0 else "FAILED"
-            print(f"[{completed_count}/{len(render_jobs)}] {state}: {identifier} -> {destination.name}", flush=True)
-            if completed.returncode:
-                failures.append(identifier)
-                if completed.stdout:
-                    print(completed.stdout, file=sys.stderr)
-                if completed.stderr:
-                    print(completed.stderr, file=sys.stderr)
+
+    def report_result(
+        completed_count: int,
+        result: tuple[str, Path, subprocess.CompletedProcess[str]],
+    ) -> None:
+        identifier, destination, completed = result
+        state = "ok" if completed.returncode == 0 else "FAILED"
+        print(f"[{completed_count}/{len(render_jobs)}] {state}: {identifier} -> {destination.name}", flush=True)
+        if completed.returncode:
+            failures.append(identifier)
+            if completed.stdout:
+                print(completed.stdout, file=sys.stderr)
+            if completed.stderr:
+                print(completed.stderr, file=sys.stderr)
+
+    # Keep a one-job run on the main thread. Besides avoiding executor startup
+    # overhead, this keeps Blender's Windows process environment identical to
+    # invoking render_model.py directly. Multi-job batches still parallelize.
+    if args.jobs == 1:
+        for completed_count, job in enumerate(render_jobs, 1):
+            report_result(completed_count, render_one(job))
+    else:
+        with ThreadPoolExecutor(max_workers=args.jobs) as executor:
+            futures = [executor.submit(render_one, job) for job in render_jobs]
+            for completed_count, future in enumerate(as_completed(futures), 1):
+                report_result(completed_count, future.result())
     if failures:
         raise SystemExit("Failed renders: " + ", ".join(failures))
     override_note = f"; overrides {overrides_path}" if overrides_path.is_file() else ""

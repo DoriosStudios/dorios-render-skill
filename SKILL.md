@@ -32,6 +32,8 @@ python <skill-dir>/scripts/render_bedrock_pack.py `
   --view iso-ne
 ```
 
+The batch renderer loads both `RP/textures/blocks` and `RP/textures/entity`. This is required for custom geometries whose secondary material instances use entity textures, such as the `fluid` or `gas` interior bones of resource tanks.
+
 For large packs, repeat `--exclude-path <fragment>` to omit model families, repeat `--include-path <fragment>` to render only selected families, and use `--include-identifier-suffix <suffix>` or `--exclude-identifier-suffix <suffix>` for identifier-based selection such as rendering only `_seeds` definitions from a crop folder. Use `--jobs <count>` for controlled concurrent Blender processes, and add `--skip-existing` to resume an interrupted batch without replacing completed PNGs. The batch renderer rejects duplicate identifier-derived filenames before rendering.
 
 The batch renderer automatically loads `<pack-root>/Assets/render_overrides.json` when present, or accepts `--overrides <file>`. Use `path_rules` for family-wide settings and `blocks` keyed by full identifier for `model_rotation`, `ortho_scale`, `margin`, `resolution`, `view`, `lighting`, `hide_bones`, or `bone_rotations` exceptions. This keeps verified pack-specific framing, state visibility, and orientation reproducible.
@@ -96,7 +98,7 @@ If the user's coordinate convention differs, render a low-resolution preview and
 
 ## Format routing
 
-- Bedrock `.geo.json` / geometry JSON: preserve cube dimensions, pivots, hierarchy, base rotations, mirror flags, and UV coordinates where represented.
+- Bedrock `.geo.json` / geometry JSON: preserve cube dimensions, pivots, hierarchy, base rotations, mirror flags, and UV coordinates where represented. Map horizontal `up`/`down` face UVs with atlas U along the model X axis so directional pipe textures do not appear quarter-turned.
 - Bedrock behavior-pack block JSON/JSONC: read `minecraft:geometry`; use per-face and per-cube `minecraft:material_instances` or legacy `RP/blocks.json` textures; resolve texture keys and dependency geometries through sibling resource packs. Scale UV coordinates to each material texture's actual atlas dimensions and respect `uv_rotation` when a geometry mixes atlas sizes. This prevents crop X-planes and similar thin geometry from wrapping or repeating.
 - Bedrock blocks whose materials exist only in `permutations`: for a catalog render, merge the last material-bearing permutation over the base components so staged blocks such as crops appear in their mature/complete state.
 - Java block-model JSON: render explicit `elements`; synthesize standard cube parents such as `cube_all` and `cube_column`; resolve texture variables from supplied texture paths.

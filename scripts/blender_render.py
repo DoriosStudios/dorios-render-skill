@@ -54,6 +54,7 @@ def arguments() -> argparse.Namespace:
     parser.add_argument("--ground", default="auto")
     parser.add_argument("--no-shadows", action="store_true")
     parser.add_argument("--texture-filter", default="closest")
+    parser.add_argument("--bedrock-horizontal-uv-rotation", type=int, default=90)
     return parser.parse_args(argv)
 
 
@@ -374,6 +375,13 @@ def import_bedrock(
             upper = [origin[i] + size[i] + inflate for i in range(3)]
             faces = bedrock_faces(cube, size)
             for face_name, face in faces.items():
+                # Bedrock lays out horizontal cube faces with the atlas U axis
+                # along model X.  The generic Blender quad order has U along
+                # model Z on up/down, so compensate by one quarter turn.
+                if face_name in {"up", "down"}:
+                    face["uv_rotation"] = (
+                        int(face.get("uv_rotation", 0)) + int(args.bedrock_horizontal_uv_rotation)
+                    ) % 360
                 instance_name = face.get("material_instance")
                 if not instance_name and material_references and face_name in material_references:
                     instance_name = face_name
@@ -849,10 +857,16 @@ def import_structure(args: argparse.Namespace) -> list[bpy.types.Object]:
     items = manifest.get("blocks")
     if not isinstance(items, list) or not items:
         raise RuntimeError("Structure manifest requires a non-empty 'blocks' array")
+    defaults = manifest.get("defaults", {})
+    if not isinstance(defaults, dict):
+        raise RuntimeError("Structure manifest 'defaults' must be an object")
     base = args.manifest.parent
     imported: list[bpy.types.Object] = []
-    for index, entry in enumerate(items):
-        if not isinstance(entry, dict) or not entry.get("model"):
+    for index, raw_entry in enumerate(items):
+        if not isinstance(raw_entry, dict):
+            raise RuntimeError(f"Invalid structure item at index {index}: expected an object")
+        entry = {**defaults, **raw_entry}
+        if not entry.get("model"):
             raise RuntimeError(f"Invalid structure item at index {index}: expected an object with 'model'")
         item_args = copy.copy(args)
         item_args.manifest = None
@@ -862,6 +876,9 @@ def import_structure(args: argparse.Namespace) -> list[bpy.types.Object]:
         resource_value = entry.get("resource_pack")
         item_args.resource_pack = manifest_path(base, str(resource_value)) if resource_value else None
         item_args.geometry = entry.get("geometry")
+        item_args.bedrock_horizontal_uv_rotation = int(
+            entry.get("bedrock_horizontal_uv_rotation", args.bedrock_horizontal_uv_rotation)
+        )
         texture_values = entry.get("textures")
         if isinstance(texture_values, str):
             texture_values = [texture_values]
@@ -872,7 +889,6 @@ def import_structure(args: argparse.Namespace) -> list[bpy.types.Object]:
         objects = import_model(item_args, catalog)
         if not objects:
             raise RuntimeError(f"Structure item created no objects: {item_args.model}")
-        hide_item_bones(objects, [str(value) for value in entry.get("hide_bones", [])])
         name = str(entry.get("name") or item_args.model.stem)
         root = place_structure_item(
             objects,
@@ -881,6 +897,10 @@ def import_structure(args: argparse.Namespace) -> list[bpy.types.Object]:
             [float(value) for value in entry.get("rotation", [0, 0, 0])],
             str(entry.get("vertical_align", "bottom")),
         )
+        # Anchor the complete model in its grid cell before hiding optional
+        # connection bones.  Otherwise an asymmetric T/corner conduit is
+        # re-centered from its visible bounds and no longer meets neighbours.
+        hide_item_bones(objects, [str(value) for value in entry.get("hide_bones", [])])
         imported.extend([*objects, root])
     return imported
 

@@ -47,6 +47,10 @@ JSON UV coordinates start at the image's upper-left while Blender UV V starts at
 
 Bedrock box UVs are expanded into six face rectangles using the cube dimensions. Explicit per-face UV data takes precedence.
 
+The renderer normally rotates Bedrock `up`/`down` UVs by 90 degrees because its generic quad order differs from Bedrock's atlas convention. For a model authored to the renderer's order, use `--bedrock-horizontal-uv-rotation 0`; pack batch overrides accept `"bedrock_horizontal_uv_rotation": 0`, and structure items accept the same field. Keep the default for pipes and other conventional Bedrock cube geometry.
+
+Pack batch overrides may replace a problematic catalog model with `"model"` and its texture inputs with `"textures"`. Relative paths are resolved from the pack root. Use this for a render-only corrected geometry when editing the shipped game model would be inappropriate.
+
 ## Known limitations
 
 - Bedrock poly meshes, locators, animations, material instances, and render controllers are not evaluated.

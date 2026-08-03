@@ -81,6 +81,12 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--ground", choices=["auto", "on", "off"], default="auto")
     result.add_argument("--no-shadows", action="store_true")
     result.add_argument("--texture-filter", choices=["closest", "linear"], default="closest")
+    result.add_argument(
+        "--bedrock-horizontal-uv-rotation",
+        type=int,
+        default=90,
+        help="Quarter-turn correction for Bedrock up/down faces; set 0 for models authored in renderer order",
+    )
     result.add_argument("--blender")
     result.add_argument("--dry-run", action="store_true")
     return result
@@ -147,6 +153,7 @@ def main() -> None:
             "--margin", str(args.margin), "--samples", str(args.samples),
             "--background", args.background, "--lighting", args.lighting,
             "--ground", args.ground, "--texture-filter", args.texture_filter,
+            "--bedrock-horizontal-uv-rotation", str(args.bedrock_horizontal_uv_rotation),
         ]
         if texture_paths:
             forwarded.extend(["--textures", *map(str, texture_paths)])
