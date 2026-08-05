@@ -111,7 +111,11 @@ def main() -> None:
     # live outside textures/blocks (for example tank fluid/gas contents in
     # textures/entity).  Feed both catalogs to the model renderer so those
     # per-face material instances resolve instead of falling back to magenta.
-    texture_roots = [rp / "textures" / "blocks", rp / "textures" / "entity"]
+    texture_roots = [
+        rp / "textures" / "blocks",
+        rp / "textures" / "entity",
+        rp / "textures" / "models",
+    ]
     # Some add-ons reuse geometry and material keys from a sibling base pack
     # (Ascendant Technology, for example, reuses UtilityCraft turbine blades
     # and power-beacon atlases). Keep this pack first so local assets win, then
@@ -122,6 +126,7 @@ def main() -> None:
         texture_roots.extend([
             sibling_rp / "textures" / "blocks",
             sibling_rp / "textures" / "entity",
+            sibling_rp / "textures" / "models",
         ])
     texture_roots = [path for path in texture_roots if path.is_dir()]
     render_jobs: list[tuple[str, Path, list[str]]] = []
