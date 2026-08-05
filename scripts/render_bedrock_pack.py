@@ -112,6 +112,17 @@ def main() -> None:
     # textures/entity).  Feed both catalogs to the model renderer so those
     # per-face material instances resolve instead of falling back to magenta.
     texture_roots = [rp / "textures" / "blocks", rp / "textures" / "entity"]
+    # Some add-ons reuse geometry and material keys from a sibling base pack
+    # (Ascendant Technology, for example, reuses UtilityCraft turbine blades
+    # and power-beacon atlases). Keep this pack first so local assets win, then
+    # expose sibling RP textures as dependency fallbacks.
+    for sibling_rp in sorted(pack_root.parent.glob("*/RP")):
+        if sibling_rp.resolve() == rp.resolve():
+            continue
+        texture_roots.extend([
+            sibling_rp / "textures" / "blocks",
+            sibling_rp / "textures" / "entity",
+        ])
     texture_roots = [path for path in texture_roots if path.is_dir()]
     render_jobs: list[tuple[str, Path, list[str]]] = []
     destinations: dict[str, Path] = {}

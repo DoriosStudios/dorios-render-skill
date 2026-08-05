@@ -115,14 +115,20 @@ class TextureCatalog:
         self.files: list[Path] = []
         self.interpolation = "Closest" if interpolation == "closest" else "Linear"
         self.emission = emission
+        seen: set[Path] = set()
         for supplied in paths:
             if supplied.is_dir():
-                self.files.extend(
+                candidates = sorted(
                     path.resolve() for path in supplied.rglob("*") if path.suffix.lower() in IMAGE_EXTENSIONS
                 )
             elif supplied.suffix.lower() in IMAGE_EXTENSIONS:
-                self.files.append(supplied.resolve())
-        self.files = sorted(set(self.files))
+                candidates = [supplied.resolve()]
+            else:
+                candidates = []
+            for candidate in candidates:
+                if candidate not in seen:
+                    seen.add(candidate)
+                    self.files.append(candidate)
         self.materials: dict[Path | None, bpy.types.Material] = {}
 
     @staticmethod
@@ -136,12 +142,33 @@ class TextureCatalog:
         if not self.files:
             return None
         if reference:
+            # Prefer the complete logical Bedrock path before falling back to
+            # canonical filename matching. This disambiguates assets such as
+            # textures/blocks/laser_barrier_field when a second same-named PNG
+            # exists below a temp/legacy folder. Input-root order gives the
+            # current RP priority over sibling dependency packs.
+            logical = reference.replace("\\", "/").split(":")[-1]
+            logical = re.sub(r"\.(png|jpg|jpeg|tga|bmp|webp)$", "", logical, flags=re.I)
+            logical = logical.strip("/").lower()
+            if "/" in logical:
+                path_matches = []
+                for path in self.files:
+                    normalized = re.sub(
+                        r"\.(png|jpg|jpeg|tga|bmp|webp)$",
+                        "",
+                        path.as_posix().lower(),
+                        flags=re.I,
+                    )
+                    if normalized.endswith("/" + logical):
+                        path_matches.append(path)
+                if path_matches:
+                    return path_matches[0]
             wanted = self.key(reference)
             exact = [path for path in self.files if self.key(path.stem) == wanted]
-            if len(exact) == 1:
+            if exact:
                 return exact[0]
             suffix = [path for path in self.files if self.key(path.as_posix()).endswith(wanted)]
-            if len(suffix) == 1:
+            if suffix:
                 return suffix[0]
         return self.files[0] if len(self.files) == 1 else None
 
@@ -452,17 +479,26 @@ def resource_pack_path(args: argparse.Namespace) -> Path | None:
 def terrain_references(resource_pack: Path | None) -> dict[str, str]:
     if resource_pack is None:
         return {}
-    path = resource_pack / "textures" / "terrain_texture.json"
-    if not path.is_file():
-        return {}
-    data = load_json(path).get("texture_data", {})
     result: dict[str, str] = {}
-    for key, entry in data.items() if isinstance(data, dict) else []:
-        value = entry.get("textures") if isinstance(entry, dict) else entry
-        if isinstance(value, list) and value:
-            value = value[0]
-        if isinstance(value, str):
-            result[str(key)] = value
+    workspace = resource_pack.parent.parent
+    catalogs = [
+        candidate
+        for candidate in sorted(workspace.glob("*/RP/textures/terrain_texture.json"))
+        if candidate.resolve() != (resource_pack / "textures" / "terrain_texture.json").resolve()
+    ]
+    # Dependency catalogs load first; the active resource pack always wins on
+    # duplicate material keys.
+    catalogs.append(resource_pack / "textures" / "terrain_texture.json")
+    for path in catalogs:
+        if not path.is_file():
+            continue
+        data = load_json(path).get("texture_data", {})
+        for key, entry in data.items() if isinstance(data, dict) else []:
+            value = entry.get("textures") if isinstance(entry, dict) else entry
+            if isinstance(value, list) and value:
+                value = value[0]
+            if isinstance(value, str):
+                result[str(key)] = value
     return result
 
 
