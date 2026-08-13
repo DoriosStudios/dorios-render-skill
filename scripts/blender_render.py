@@ -50,7 +50,7 @@ def arguments() -> argparse.Namespace:
     parser.add_argument("--background", default="transparent")
     parser.add_argument(
         "--lighting",
-        choices=["balanced", "left_light", "right_light", "studio", "flat", "dramatic"],
+        choices=["balanced", "left_light", "right_light", "studio", "flat", "dramatic", "neon"],
         default="right_light",
     )
     parser.add_argument("--ground", default="auto")
@@ -111,10 +111,17 @@ def bedrock_geometries(data: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 class TextureCatalog:
-    def __init__(self, paths: list[Path], interpolation: str, emission: float = 0.16) -> None:
+    def __init__(
+        self,
+        paths: list[Path],
+        interpolation: str,
+        emission: float = 0.16,
+        pbr: bool = False,
+    ) -> None:
         self.files: list[Path] = []
         self.interpolation = "Closest" if interpolation == "closest" else "Linear"
         self.emission = emission
+        self.pbr = pbr
         seen: set[Path] = set()
         for supplied in paths:
             if supplied.is_dir():
@@ -130,6 +137,44 @@ class TextureCatalog:
                     seen.add(candidate)
                     self.files.append(candidate)
         self.materials: dict[Path | None, bpy.types.Material] = {}
+
+    @staticmethod
+    def related_image(base_image: Path, reference: str | None) -> Path | None:
+        if not isinstance(reference, str) or not reference:
+            return None
+        logical = Path(reference.replace("\\", "/"))
+        candidate = logical if logical.is_absolute() else base_image.parent / logical.name
+        if candidate.suffix.lower() in IMAGE_EXTENSIONS and candidate.is_file():
+            return candidate.resolve()
+        for extension in IMAGE_EXTENSIONS:
+            with_extension = candidate.with_suffix(extension)
+            if with_extension.is_file():
+                return with_extension.resolve()
+        return None
+
+    def texture_set(self, image_path: Path) -> dict[str, Any]:
+        if not self.pbr:
+            return {}
+        path = image_path.with_suffix(".texture_set.json")
+        if not path.is_file():
+            return {}
+        try:
+            value = load_json(path).get("minecraft:texture_set", {})
+        except (OSError, ValueError):
+            return {}
+        return value if isinstance(value, dict) else {}
+
+    def image_node(self, nodes: Any, path: Path, non_color: bool = False) -> Any:
+        image = bpy.data.images.load(str(path), check_existing=True)
+        if non_color:
+            try:
+                image.colorspace_settings.name = "Non-Color"
+            except TypeError:
+                pass
+        texture = nodes.new("ShaderNodeTexImage")
+        texture.image = image
+        texture.interpolation = self.interpolation
+        return texture
 
     @staticmethod
     def key(value: str) -> str:
@@ -185,18 +230,56 @@ class TextureCatalog:
         shader = nodes.new("ShaderNodeBsdfPrincipled")
         shader.inputs["Roughness"].default_value = 0.82
         if image_path:
-            image = bpy.data.images.load(str(image_path), check_existing=True)
-            texture = nodes.new("ShaderNodeTexImage")
-            texture.image = image
-            texture.interpolation = self.interpolation
+            texture = self.image_node(nodes, image_path)
             links.new(texture.outputs["Color"], shader.inputs["Base Color"])
             links.new(texture.outputs["Alpha"], shader.inputs["Alpha"])
             emission_input = shader.inputs.get("Emission Color") or shader.inputs.get("Emission")
             emission_strength = shader.inputs.get("Emission Strength")
-            if emission_input:
-                links.new(texture.outputs["Color"], emission_input)
-            if emission_strength:
-                emission_strength.default_value = self.emission
+            texture_set = self.texture_set(image_path)
+            mer_path = self.related_image(image_path, texture_set.get("metalness_emissive_roughness"))
+            if mer_path:
+                mer = self.image_node(nodes, mer_path, non_color=True)
+                try:
+                    separate = nodes.new("ShaderNodeSeparateColor")
+                    separate.mode = "RGB"
+                except RuntimeError:
+                    separate = nodes.new("ShaderNodeSeparateRGB")
+                links.new(mer.outputs["Color"], separate.inputs[0])
+                metallic_input = shader.inputs.get("Metallic")
+                roughness_input = shader.inputs.get("Roughness")
+                if metallic_input:
+                    links.new(separate.outputs[0], metallic_input)
+                if roughness_input:
+                    links.new(separate.outputs[2], roughness_input)
+                if emission_input:
+                    links.new(texture.outputs["Color"], emission_input)
+                if emission_strength:
+                    amplify = nodes.new("ShaderNodeMath")
+                    amplify.operation = "MULTIPLY"
+                    amplify.inputs[1].default_value = 4.0
+                    links.new(separate.outputs[1], amplify.inputs[0])
+                    links.new(amplify.outputs[0], emission_strength)
+            elif not self.pbr:
+                if emission_input:
+                    links.new(texture.outputs["Color"], emission_input)
+                if emission_strength:
+                    emission_strength.default_value = self.emission
+            height_path = self.related_image(image_path, texture_set.get("heightmap"))
+            normal_path = self.related_image(image_path, texture_set.get("normal"))
+            normal_input = shader.inputs.get("Normal")
+            if normal_input and normal_path:
+                normal_texture = self.image_node(nodes, normal_path, non_color=True)
+                normal_map = nodes.new("ShaderNodeNormalMap")
+                normal_map.inputs["Strength"].default_value = 0.35
+                links.new(normal_texture.outputs["Color"], normal_map.inputs["Color"])
+                links.new(normal_map.outputs["Normal"], normal_input)
+            elif normal_input and height_path:
+                height = self.image_node(nodes, height_path, non_color=True)
+                bump = nodes.new("ShaderNodeBump")
+                bump.inputs["Strength"].default_value = 0.22
+                bump.inputs["Distance"].default_value = 0.08
+                links.new(height.outputs["Color"], bump.inputs["Height"])
+                links.new(bump.outputs["Normal"], normal_input)
             try:
                 material.surface_render_method = "DITHERED"
             except AttributeError:
@@ -1161,12 +1244,22 @@ def hex_color(value: str) -> tuple[float, float, float, float]:
     return tuple(int(clean[index:index + 2], 16) / 255 for index in (0, 2, 4)) + (1.0,)
 
 
-def add_area(name: str, location: Vector, target: Vector, energy: float, size: float, shadows: bool) -> None:
+def add_area(
+    name: str,
+    location: Vector,
+    target: Vector,
+    energy: float,
+    size: float,
+    shadows: bool,
+    color: tuple[float, float, float] | None = None,
+) -> None:
     light_data = bpy.data.lights.new(name, "AREA")
     light_data.energy = energy
     light_data.shape = "DISK"
     light_data.size = size
     light_data.use_shadow = shadows
+    if color:
+        light_data.color = color
     light = bpy.data.objects.new(name, light_data)
     bpy.context.collection.objects.link(light)
     light.location = location
@@ -1179,6 +1272,33 @@ def uses_original_directional_light(lighting: str) -> bool:
 
 def texture_emission(lighting: str) -> float:
     return 0.12 if uses_original_directional_light(lighting) else 0.16
+
+
+def neon_color(args: argparse.Namespace) -> tuple[float, float, float] | None:
+    fallback = (0.12, 0.8, 1.0)
+    if not args.model or not args.resource_pack:
+        return None
+    try:
+        identifier = str(load_json(args.model).get("minecraft:block", {}).get("description", {}).get("identifier", ""))
+        settings_path = args.resource_pack / "local_lighting" / "local_lighting.json"
+        settings = load_json(settings_path).get("minecraft:local_light_settings", {}) if settings_path.is_file() else {}
+        entry = settings.get(identifier, {}) if isinstance(settings, dict) else {}
+        color = entry.get("light_color") if isinstance(entry, dict) else None
+        if isinstance(color, list) and len(color) == 3:
+            return tuple(max(0.0, min(float(channel) / 255.0, 1.0)) for channel in color)
+    except (OSError, ValueError, TypeError):
+        pass
+    name = args.model.stem.casefold()
+    if "neon" not in name:
+        return None
+    named = {
+        "magenta": (1.0, 0.0, 1.0), "purple": (0.5, 0.0, 1.0),
+        "orange": (1.0, 0.38, 0.0), "yellow": (1.0, 1.0, 0.0),
+        "lime": (0.0, 1.0, 0.12), "green": (0.0, 1.0, 0.12),
+        "cyan": (0.0, 1.0, 1.0), "blue": (0.0, 0.25, 1.0),
+        "red": (1.0, 0.0, 0.0), "white": (0.9, 0.95, 1.0),
+    }
+    return next((value for key, value in named.items() if key in name), fallback)
 
 
 def setup_lighting(args: argparse.Namespace, lower: Vector, upper: Vector) -> bpy.types.Object | None:
@@ -1194,7 +1314,27 @@ def setup_lighting(args: argparse.Namespace, lower: Vector, upper: Vector) -> bp
         azimuth, _ = (math.radians(value) for value in view_angles(args.view, args.azimuth, args.elevation))
         camera_horizontal = Vector((math.cos(azimuth), math.sin(azimuth), 0))
         camera_side = Vector((-math.sin(azimuth), math.cos(azimuth), 0))
-        if args.lighting == "balanced":
+        if args.lighting == "neon":
+            color = neon_color(args)
+            add_area(
+                "SoftKey", center + camera_side * span + Vector((0, 0, span * 1.7)), center,
+                2600 * multiplier, span * 2.2, not args.no_shadows,
+            )
+            if color:
+                add_area(
+                    "NeonGlow", center + camera_horizontal * span * 0.8 + Vector((0, 0, span * 0.55)), center,
+                    5200 * multiplier, span * 1.35, not args.no_shadows, color,
+                )
+                add_area(
+                    "NeonRim", center - camera_horizontal * span * 0.7 - camera_side * span * 0.7 + Vector((0, 0, span)), center,
+                    2400 * multiplier, span * 1.5, not args.no_shadows, color,
+                )
+            else:
+                add_area(
+                    "NeutralFill", center + camera_horizontal * span * 0.8 + Vector((0, 0, span * 0.55)), center,
+                    2600 * multiplier, span * 1.8, not args.no_shadows,
+                )
+        elif args.lighting == "balanced":
             key_depth = -camera_horizontal * span * 0.25 + Vector((0, 0, span * 1.2))
             add_area("LeftKey", center - camera_side * span * 1.2 + key_depth, center, 2800 * multiplier, span * 1.8, not args.no_shadows)
             add_area("RightKey", center + camera_side * span * 1.2 + key_depth, center, 2800 * multiplier, span * 1.8, not args.no_shadows)
@@ -1256,6 +1396,8 @@ def setup_scene(args: argparse.Namespace) -> None:
             world_strength = 1.0
         elif uses_original_directional_light(args.lighting):
             world_strength = 0.7
+        elif args.lighting == "neon":
+            world_strength = 0.24
         else:
             world_strength = 0.83
         background.inputs["Strength"].default_value = world_strength
@@ -1266,7 +1408,12 @@ def setup_scene(args: argparse.Namespace) -> None:
             scene.view_settings.look = "Medium High Contrast"
         except TypeError:
             pass
-    scene.view_settings.exposure = 0.20 if uses_original_directional_light(args.lighting) else 0.42
+    if uses_original_directional_light(args.lighting):
+        scene.view_settings.exposure = 0.20
+    elif args.lighting == "neon":
+        scene.view_settings.exposure = 0.32
+    else:
+        scene.view_settings.exposure = 0.42
 
 
 def clear_startup_scene() -> None:
@@ -1290,6 +1437,7 @@ def main() -> None:
             [path.resolve() for path in args.textures],
             args.texture_filter,
             texture_emission(args.lighting),
+            pbr=args.lighting == "neon",
         )
         imported = import_model(args, catalog)
     if not imported:

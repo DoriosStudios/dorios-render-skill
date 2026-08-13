@@ -22,7 +22,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--background", default="transparent")
     parser.add_argument(
         "--lighting",
-        choices=["balanced", "left_light", "right_light", "studio", "flat", "dramatic"],
+        choices=["balanced", "left_light", "right_light", "studio", "flat", "dramatic", "neon"],
         default="right_light",
     )
     parser.add_argument("--blender")
@@ -77,6 +77,14 @@ def main() -> None:
     pack_root = args.pack_root.expanduser().resolve()
     bp = pack_root / "BP"
     rp = pack_root / "RP"
+    if not bp.is_dir():
+        bp_candidates = sorted(path for path in pack_root.iterdir() if path.is_dir() and path.name.casefold().endswith(" bp"))
+        if len(bp_candidates) == 1:
+            bp = bp_candidates[0]
+    if not rp.is_dir():
+        rp_candidates = sorted(path for path in pack_root.iterdir() if path.is_dir() and path.name.casefold().endswith(" rp"))
+        if len(rp_candidates) == 1:
+            rp = rp_candidates[0]
     if not bp.is_dir() or not rp.is_dir():
         raise SystemExit(f"Expected BP and RP folders below: {pack_root}")
     blocks_root = bp / "blocks"

@@ -77,7 +77,7 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--background", default="transparent")
     result.add_argument(
         "--lighting",
-        choices=["balanced", "left_light", "right_light", "studio", "flat", "dramatic"],
+        choices=["balanced", "left_light", "right_light", "studio", "flat", "dramatic", "neon"],
         default="right_light",
     )
     result.add_argument("--ground", choices=["auto", "on", "off"], default="auto")

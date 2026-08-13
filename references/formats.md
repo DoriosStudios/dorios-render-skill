@@ -35,6 +35,8 @@ Bedrock geometry usually uses one atlas PNG whose dimensions correspond to `text
 
 Legacy Bedrock blocks without `minecraft:material_instances` resolve their face textures from `RP/blocks.json`. If a custom geometry is supplied by a dependency pack, search sibling project `RP/models` folders before reporting it missing.
 
+When `--lighting neon` is selected, adjacent Bedrock `.texture_set.json` files are loaded automatically. The renderer interprets MER channels as metalness, emissive mask, and roughness, and also loads `normal` or `heightmap` entries. If the RP provides `local_lighting/local_lighting.json`, the block identifier's light color tints the neon fill and rim.
+
 Java block models resolve `#variables` recursively through the model's `textures` map. For inherited parent JSON outside `cube_all`, `cube`, and `cube_column`, provide a flattened model containing `elements` or also provide the needed parent model for a future extension.
 
 Imported GLB/GLTF/BLEND files keep embedded textures. OBJ files should include the adjacent `.mtl` and its images; otherwise the first supplied image is used as a fallback material.

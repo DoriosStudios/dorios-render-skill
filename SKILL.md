@@ -71,13 +71,15 @@ Useful options:
 - `--source-output <hd.png>` to preserve that Blender source beside the scaled result
 - `--no-center-content` to preserve the raw camera position instead of centering visible alpha bounds
 - `--margin <fraction>` (default `0.025`), `--samples <number>`
-- `--background transparent|#RRGGBB`, `--lighting balanced|left_light|right_light|studio|flat|dramatic`
+- `--background transparent|#RRGGBB`, `--lighting balanced|left_light|right_light|studio|flat|dramatic|neon`
 - `--ground auto|on|off`, `--no-shadows`, `--texture-filter closest|linear`
 - `--blender <path>` when Blender is not on `PATH`
 - `--dry-run` to print the Blender command without executing it
 
 Use `closest` texture filtering by default for Minecraft and other pixel art. Keep texture colors unchanged; do not repaint, upscale, hallucinate, or complete missing pixels.
 Use `right_light` by default. It provides the strong upper-right studio key, softens the darkest face with a secondary light placed in the opposite direction at exactly 20% of the main key energy, and uses `0.20` exposure. `left_light` mirrors every directional light around the camera axis with identical energy, height, softness, fill ratio, material response, and exposure. Use `balanced` only when the prompt requests normalized faces; it uses equal upper-left and upper-right keys plus a weak centered front fill. `studio` remains a backward-compatible alias of `left_light`.
+
+Use `neon` for Bedrock PBR packs whose blocks emit colored light. It reads adjacent `.texture_set.json` files, maps MER red/green/blue channels to metalness/emission/roughness, applies normal or height maps when present, and uses the block's `RP/local_lighting/local_lighting.json` color for a restrained emissive fill and rim. Non-emissive pixels stay physically lit instead of glowing uniformly.
 
 ## View mapping
 
