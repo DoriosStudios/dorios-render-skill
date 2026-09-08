@@ -50,12 +50,12 @@ def arguments() -> argparse.Namespace:
     parser.add_argument("--background", default="transparent")
     parser.add_argument(
         "--lighting",
-        choices=["balanced", "left_light", "right_light", "studio", "flat", "dramatic", "neon"],
-        default="right_light",
+        choices=["vanilla", "balanced", "left_light", "right_light", "studio", "flat", "dramatic", "neon"],
+        default="vanilla",
     )
     parser.add_argument("--ground", default="auto")
     parser.add_argument("--no-shadows", action="store_true")
-    parser.add_argument("--texture-filter", default="closest")
+    parser.add_argument("--texture-filter", choices=["vanilla", "closest", "linear"], default="closest")
     parser.add_argument("--bedrock-horizontal-uv-rotation", type=int, default=90)
     parser.add_argument("--material-permutation", choices=["auto", "base", "last"], default="auto")
     return parser.parse_args(argv)
@@ -77,6 +77,12 @@ def model_to_blender(point: list[float] | tuple[float, ...]) -> Vector:
 
 def model_rotation(value: list[float] | tuple[float, ...]) -> tuple[float, float, float]:
     return tuple(math.radians(item) for item in (float(value[0]), -float(value[2]), float(value[1])))
+
+
+def bedrock_bone_rotation(value: list[float] | tuple[float, ...]) -> tuple[float, float, float]:
+    # Bedrock bone/cube rotations use opposite signed X and Z angles after
+    # conversion to Blender's handedness. Y yaw retains its authored sign.
+    return model_rotation((-float(value[0]), float(value[1]), -float(value[2])))
 
 
 def model_scale(value: list[float] | tuple[float, ...]) -> Vector:
@@ -117,11 +123,13 @@ class TextureCatalog:
         interpolation: str,
         emission: float = 0.16,
         pbr: bool = False,
+        vanilla_style: bool = False,
     ) -> None:
         self.files: list[Path] = []
-        self.interpolation = "Closest" if interpolation == "closest" else "Linear"
+        self.interpolation = "Closest" if interpolation in {"vanilla", "closest"} else "Linear"
         self.emission = emission
         self.pbr = pbr
+        self.vanilla_style = vanilla_style
         seen: set[Path] = set()
         for supplied in paths:
             if supplied.is_dir():
@@ -136,7 +144,7 @@ class TextureCatalog:
                 if candidate not in seen:
                     seen.add(candidate)
                     self.files.append(candidate)
-        self.materials: dict[Path | None, bpy.types.Material] = {}
+        self.materials: dict[tuple[Path | None, str], bpy.types.Material] = {}
 
     @staticmethod
     def related_image(base_image: Path, reference: str | None) -> Path | None:
@@ -164,7 +172,7 @@ class TextureCatalog:
             return {}
         return value if isinstance(value, dict) else {}
 
-    def image_node(self, nodes: Any, path: Path, non_color: bool = False) -> Any:
+    def image_node(self, nodes: Any, path: Path, non_color: bool = False, interpolation: str | None = None) -> Any:
         image = bpy.data.images.load(str(path), check_existing=True)
         if non_color:
             try:
@@ -173,7 +181,7 @@ class TextureCatalog:
                 pass
         texture = nodes.new("ShaderNodeTexImage")
         texture.image = image
-        texture.interpolation = self.interpolation
+        texture.interpolation = interpolation or self.interpolation
         return texture
 
     @staticmethod
@@ -217,21 +225,88 @@ class TextureCatalog:
                 return suffix[0]
         return self.files[0] if len(self.files) == 1 else None
 
-    def material(self, reference: str | None = None) -> bpy.types.Material:
+    def face_interpolation(self, face_name: str, tint: str | None = None) -> str:
+        if self.vanilla_style:
+            return "VanillaFace:" + face_name + (":" + tint if tint else "")
+        return self.interpolation
+
+    def material(self, reference: str | None = None, interpolation: str | None = None) -> bpy.types.Material:
         image_path = self.resolve(reference)
-        if image_path in self.materials:
-            return self.materials[image_path]
+        effective_interpolation = interpolation or self.interpolation
+        material_key = (image_path, effective_interpolation)
+        if material_key in self.materials:
+            return self.materials[material_key]
         material = bpy.data.materials.new("Texture:" + (image_path.stem if image_path else "missing"))
         material.use_nodes = True
         nodes = material.node_tree.nodes
         links = material.node_tree.links
         nodes.clear()
         output = nodes.new("ShaderNodeOutputMaterial")
+        vanilla_parts = effective_interpolation.split(":")
+        vanilla_face = (
+            vanilla_parts[1]
+            if effective_interpolation.startswith("VanillaFace:")
+            else ("generic" if self.vanilla_style else None)
+        )
+        vanilla_tint = vanilla_parts[2] if len(vanilla_parts) > 2 else None
+        if vanilla_face is not None:
+            # Minecraft inventory icons behave like baked pixel art. Keep the
+            # texture unlit and apply a deterministic tint per cube face instead
+            # of letting EEVEE, world light, shadows, or specular response alter
+            # the source colors.
+            if image_path:
+                texture = self.image_node(nodes, image_path, interpolation="Closest")
+                brightness = {
+                    "up": 0.87,
+                    "down": 0.34,
+                    # In the default iso-ne view, east/west is the regular
+                    # left face and north/south is the darker right face.
+                    "north": 0.19,
+                    "south": 0.19,
+                    "east": 0.43,
+                    "west": 0.43,
+                }.get(vanilla_face, 0.67)
+                tint = nodes.new("ShaderNodeMixRGB")
+                tint.blend_type = "MULTIPLY"
+                tint.inputs[0].default_value = 1.0
+                face_color = hex_color(vanilla_tint) if vanilla_tint else (1.0, 1.0, 1.0, 1.0)
+                tint.inputs[2].default_value = (
+                    brightness * face_color[0],
+                    brightness * face_color[1],
+                    brightness * face_color[2],
+                    1.0,
+                )
+                links.new(texture.outputs["Color"], tint.inputs[1])
+
+                emission = nodes.new("ShaderNodeEmission")
+                emission.inputs["Strength"].default_value = 1.0
+                links.new(tint.outputs["Color"], emission.inputs["Color"])
+
+                transparent = nodes.new("ShaderNodeBsdfTransparent")
+                alpha_mix = nodes.new("ShaderNodeMixShader")
+                links.new(texture.outputs["Alpha"], alpha_mix.inputs[0])
+                links.new(transparent.outputs[0], alpha_mix.inputs[1])
+                links.new(emission.outputs[0], alpha_mix.inputs[2])
+                links.new(alpha_mix.outputs[0], output.inputs["Surface"])
+                try:
+                    material.surface_render_method = "DITHERED"
+                except AttributeError:
+                    material.blend_method = "BLEND"
+                    material.use_screen_refraction = True
+            else:
+                emission = nodes.new("ShaderNodeEmission")
+                emission.inputs["Color"].default_value = (0.8, 0.12, 0.8, 1.0)
+                emission.inputs["Strength"].default_value = 1.0
+                links.new(emission.outputs[0], output.inputs["Surface"])
+            self.materials[material_key] = material
+            return material
+
         shader = nodes.new("ShaderNodeBsdfPrincipled")
         shader.inputs["Roughness"].default_value = 0.82
         if image_path:
-            texture = self.image_node(nodes, image_path)
-            links.new(texture.outputs["Color"], shader.inputs["Base Color"])
+            texture = self.image_node(nodes, image_path, interpolation=effective_interpolation)
+            color_output = texture.outputs["Color"]
+            links.new(color_output, shader.inputs["Base Color"])
             links.new(texture.outputs["Alpha"], shader.inputs["Alpha"])
             emission_input = shader.inputs.get("Emission Color") or shader.inputs.get("Emission")
             emission_strength = shader.inputs.get("Emission Strength")
@@ -252,7 +327,7 @@ class TextureCatalog:
                 if roughness_input:
                     links.new(separate.outputs[2], roughness_input)
                 if emission_input:
-                    links.new(texture.outputs["Color"], emission_input)
+                    links.new(color_output, emission_input)
                 if emission_strength:
                     amplify = nodes.new("ShaderNodeMath")
                     amplify.operation = "MULTIPLY"
@@ -261,7 +336,7 @@ class TextureCatalog:
                     links.new(amplify.outputs[0], emission_strength)
             elif not self.pbr:
                 if emission_input:
-                    links.new(texture.outputs["Color"], emission_input)
+                    links.new(color_output, emission_input)
                 if emission_strength:
                     emission_strength.default_value = self.emission
             height_path = self.related_image(image_path, texture_set.get("heightmap"))
@@ -288,7 +363,7 @@ class TextureCatalog:
         else:
             shader.inputs["Base Color"].default_value = (0.8, 0.12, 0.8, 1.0)
         links.new(shader.outputs["BSDF"], output.inputs["Surface"])
-        self.materials[image_path] = material
+        self.materials[material_key] = material
         return material
 
     def first_image_size(self, reference: str | None = None) -> tuple[int, int] | None:
@@ -370,11 +445,12 @@ def create_cube(
     bpy.context.collection.objects.link(obj)
     uv_layer = mesh.uv_layers.new(name="UVMap")
     material_slots: dict[str, int] = {}
-    for polygon, (_, spec) in zip(mesh.polygons, specs):
+    for polygon, (face_name, spec) in zip(mesh.polygons, specs):
         reference = spec.get("texture")
-        slot_key = str(reference)
+        face_interpolation = catalog.face_interpolation(face_name, spec.get("tint"))
+        slot_key = f"{reference}|{face_interpolation}"
         if slot_key not in material_slots:
-            obj.data.materials.append(catalog.material(reference))
+            obj.data.materials.append(catalog.material(reference, face_interpolation))
             material_slots[slot_key] = len(obj.data.materials) - 1
         polygon.material_index = material_slots[slot_key]
         face_texture_size = tuple(spec.get("texture_size", texture_size))
@@ -532,7 +608,15 @@ def import_bedrock(
                 # to Blender axes. Bake that convention around the authored
                 # Bedrock pivot. Temporary pivot objects are fragile when a
                 # model is subsequently grouped into a multi-block scene.
-                pivot = model_to_blender(cube.get("pivot", bone.get("pivot", [0, 0, 0])))
+                # A cube rotation without an explicit pivot is around that
+                # cube's own center. Falling back to the bone pivot displaces
+                # modern models such as pig.v3 instead of merely orienting
+                # their torso.
+                default_pivot = [
+                    (float(lower[index]) + float(upper[index])) / 2.0
+                    for index in range(3)
+                ]
+                pivot = model_to_blender(cube.get("pivot", default_pivot))
                 bedrock_rotation = [
                     -float(rotation[0]),
                     float(rotation[1]),
@@ -541,10 +625,25 @@ def import_bedrock(
                 matrix = Euler(model_rotation(bedrock_rotation), "XYZ").to_matrix()
                 for vertex in obj.data.vertices:
                     vertex.co = pivot + matrix @ (vertex.co - pivot)
+            bind_rotation = bone.get("bind_pose_rotation", [0, 0, 0])
+            if any(float(value) for value in bind_rotation):
+                # Legacy Bedrock geometries use bind_pose_rotation to orient
+                # the cubes authored under this bone. Child pivots are already
+                # stored in their final model coordinates, so baking this into
+                # the mesh keeps heads and limbs assembled.
+                pivot = model_to_blender(bone.get("pivot", [0, 0, 0]))
+                bedrock_rotation = [
+                    -float(bind_rotation[0]),
+                    float(bind_rotation[1]),
+                    -float(bind_rotation[2]),
+                ]
+                matrix = Euler(model_rotation(bedrock_rotation), "XYZ").to_matrix()
+                for vertex in obj.data.vertices:
+                    vertex.co = pivot + matrix @ (vertex.co - pivot)
             parent_keep_world(obj, bone_node)
             created.append(obj)
     for key, rotation in base_rotations.items():
-        nodes[key].rotation_euler = model_rotation(rotation)
+        nodes[key].rotation_euler = bedrock_bone_rotation(rotation)
     return [*nodes.values(), *created]
 
 
@@ -726,7 +825,7 @@ def synthetic_java_faces(parent: str) -> dict[str, dict[str, Any]]:
     return {name: {"texture": variable, "uv": [0, 0, 16, 16]} for name in FACE_NAMES}
 
 
-def import_java(data: dict[str, Any], catalog: TextureCatalog) -> list[bpy.types.Object]:
+def import_java(data: dict[str, Any], catalog: TextureCatalog, args: argparse.Namespace) -> list[bpy.types.Object]:
     textures = data.get("textures", {}) if isinstance(data.get("textures"), dict) else {}
     elements = data.get("elements", [])
     if not elements:
@@ -742,7 +841,16 @@ def import_java(data: dict[str, Any], catalog: TextureCatalog) -> list[bpy.types
             if name not in FACE_NAMES or not isinstance(face, dict):
                 continue
             reference = resolve_java_texture(textures, str(face.get("texture", "")))
-            faces[name] = {"texture": reference, "uv": face.get("uv", [0, 0, 16, 16])}
+            faces[name] = {
+                "texture": reference,
+                "uv": face.get("uv", [0, 0, 16, 16]),
+                "texture_size": face.get("texture_size", [16, 16]),
+                "tint": face.get("tint"),
+                "uv_rotation": (
+                    int(face.get("rotation", 0))
+                    + (90 if args.lighting == "vanilla" and name == "up" else 0)
+                ) % 360,
+            }
         obj = create_cube(
             f"Element:{index}", element.get("from", [0, 0, 0]), element.get("to", [16, 16, 16]),
             faces, catalog, (16, 16), False,
@@ -872,7 +980,7 @@ def import_model(args: argparse.Namespace, catalog: TextureCatalog) -> list[bpy.
     if suffix == ".bbmodel" or (isinstance(meta, dict) and "model_format" in meta):
         return import_bbmodel(data, catalog)
     if any(key in data for key in ("parent", "textures", "elements")):
-        return import_java(data, catalog)
+        return import_java(data, catalog, args)
     raise RuntimeError(f"Unsupported JSON model; top-level keys: {sorted(data)}")
 
 
@@ -923,7 +1031,7 @@ def apply_bones(args: argparse.Namespace) -> None:
         name, value = spec.split("=", 1)
         _, target = bones[canonical(name)]
         target.rotation_mode = "XYZ"
-        target.rotation_euler = model_rotation(triple(value, "bone rotation"))
+        target.rotation_euler = bedrock_bone_rotation(triple(value, "bone rotation"))
     for spec in args.bone_position:
         if "=" not in spec:
             raise RuntimeError(f"Invalid --bone-position {spec!r}; expected bone=x,y,z")
@@ -1115,7 +1223,12 @@ def import_structure(args: argparse.Namespace) -> list[bpy.types.Object]:
         if not texture_values and item_args.resource_pack:
             texture_values = [str(item_args.resource_pack / "textures" / "blocks")]
         texture_paths = [manifest_path(base, str(value)) for value in (texture_values or [])]
-        catalog = TextureCatalog(texture_paths, args.texture_filter, texture_emission(args.lighting))
+        catalog = TextureCatalog(
+            texture_paths,
+            args.texture_filter,
+            texture_emission(args.lighting),
+            vanilla_style=args.lighting == "vanilla",
+        )
         objects = import_model(item_args, catalog)
         if not objects:
             raise RuntimeError(f"Structure item created no objects: {item_args.model}")
@@ -1152,13 +1265,23 @@ def import_structure(args: argparse.Namespace) -> list[bpy.types.Object]:
         anchor_visible = bool(entry.get("anchor_visible_bounds", False))
         if anchor_visible:
             hide_item_bones(objects, hidden_names)
-        root = place_structure_item(
-            objects,
-            name,
-            [float(value) for value in entry.get("position", [0, 0, 0])],
-            [float(value) for value in entry.get("rotation", [0, 0, 0])],
-            str(entry.get("vertical_align", "bottom")),
-        )
+        if bool(entry.get("preserve_origin", False)):
+            root = bpy.data.objects.new("StructureItem:" + name, None)
+            bpy.context.collection.objects.link(root)
+            for obj in root_objects(objects):
+                parent_keep_world(obj, root)
+            root.rotation_euler = model_rotation(
+                [float(value) for value in entry.get("rotation", [0, 0, 0])]
+            )
+            bpy.context.view_layer.update()
+        else:
+            root = place_structure_item(
+                objects,
+                name,
+                [float(value) for value in entry.get("position", [0, 0, 0])],
+                [float(value) for value in entry.get("rotation", [0, 0, 0])],
+                str(entry.get("vertical_align", "bottom")),
+            )
         # Anchor the complete model in its grid cell before hiding optional
         # connection bones.  Otherwise an asymmetric T/corner conduit is
         # re-centered from its visible bounds and no longer meets neighbours.
@@ -1271,6 +1394,8 @@ def uses_original_directional_light(lighting: str) -> bool:
 
 
 def texture_emission(lighting: str) -> float:
+    if lighting == "vanilla":
+        return 0.0
     return 0.12 if uses_original_directional_light(lighting) else 0.16
 
 
@@ -1305,7 +1430,11 @@ def setup_lighting(args: argparse.Namespace, lower: Vector, upper: Vector) -> bp
     center = (lower + upper) / 2
     span = max((upper - lower).length, 1)
     multiplier = span * span / 256
-    if args.lighting == "flat":
+    if args.lighting == "vanilla":
+        # Vanilla materials are unlit and already contain deterministic face
+        # shading, so scene lights would only add work and accidental variance.
+        pass
+    elif args.lighting == "flat":
         add_area("Key", center + Vector((span, -span, span * 2)), center, 9000 * multiplier, span * 2, not args.no_shadows)
     elif args.lighting == "dramatic":
         add_area("Key", center + Vector((span, -span, span * 1.6)), center, 12000 * multiplier, span, not args.no_shadows)
@@ -1391,8 +1520,14 @@ def setup_scene(args: argparse.Namespace) -> None:
     world.use_nodes = True
     background = world.node_tree.nodes.get("Background")
     if background:
-        background.inputs["Color"].default_value = (0.04, 0.045, 0.055, 1) if args.background == "transparent" else hex_color(args.background)
-        if args.lighting == "flat":
+        if args.background == "transparent":
+            world_color = (0.0, 0.0, 0.0, 1) if args.lighting == "vanilla" else (0.04, 0.045, 0.055, 1)
+        else:
+            world_color = hex_color(args.background)
+        background.inputs["Color"].default_value = world_color
+        if args.lighting == "vanilla":
+            world_strength = 0.0 if args.background == "transparent" else 1.0
+        elif args.lighting == "flat":
             world_strength = 1.0
         elif uses_original_directional_light(args.lighting):
             world_strength = 0.7
@@ -1401,13 +1536,22 @@ def setup_scene(args: argparse.Namespace) -> None:
         else:
             world_strength = 0.83
         background.inputs["Strength"].default_value = world_strength
-    try:
-        scene.view_settings.look = "AgX - Medium High Contrast"
-    except TypeError:
+    if args.lighting == "vanilla":
+        scene.view_settings.view_transform = "Standard"
         try:
-            scene.view_settings.look = "Medium High Contrast"
+            scene.view_settings.look = "None"
         except TypeError:
             pass
+        scene.view_settings.exposure = 0.0
+        scene.view_settings.gamma = 1.0
+    else:
+        try:
+            scene.view_settings.look = "AgX - Medium High Contrast"
+        except TypeError:
+            try:
+                scene.view_settings.look = "Medium High Contrast"
+            except TypeError:
+                pass
     if uses_original_directional_light(args.lighting):
         scene.view_settings.exposure = 0.20
     elif args.lighting == "neon":
@@ -1438,6 +1582,7 @@ def main() -> None:
             args.texture_filter,
             texture_emission(args.lighting),
             pbr=args.lighting == "neon",
+            vanilla_style=args.lighting == "vanilla",
         )
         imported = import_model(args, catalog)
     if not imported:

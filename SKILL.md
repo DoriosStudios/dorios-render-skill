@@ -70,16 +70,116 @@ Useful options:
 - `--render-resolution WIDTHxHEIGHT` for the Blender source (automatic `1024x1024` for the default output)
 - `--source-output <hd.png>` to preserve that Blender source beside the scaled result
 - `--no-center-content` to preserve the raw camera position instead of centering visible alpha bounds
-- `--margin <fraction>` (default `0.025`), `--samples <number>`
-- `--background transparent|#RRGGBB`, `--lighting balanced|left_light|right_light|studio|flat|dramatic|neon`
-- `--ground auto|on|off`, `--no-shadows`, `--texture-filter closest|linear`
+- `--margin <fraction>` (default `0.025`; `vanilla` uses `0.0075` when omitted), `--samples <number>`
+- `--background transparent|#RRGGBB`, `--lighting vanilla|balanced|left_light|right_light|studio|flat|dramatic|neon`
+- `--ground auto|on|off`, `--no-shadows`, `--texture-filter vanilla|closest|linear` (`vanilla` is retained as a compatibility alias of `closest`)
 - `--blender <path>` when Blender is not on `PATH`
 - `--dry-run` to print the Blender command without executing it
 
 Use `closest` texture filtering by default for Minecraft and other pixel art. Keep texture colors unchanged; do not repaint, upscale, hallucinate, or complete missing pixels.
-Use `right_light` by default. It provides the strong upper-right studio key, softens the darkest face with a secondary light placed in the opposite direction at exactly 20% of the main key energy, and uses `0.20` exposure. `left_light` mirrors every directional light around the camera axis with identical energy, height, softness, fill ratio, material response, and exposure. Use `balanced` only when the prompt requests normalized faces; it uses equal upper-left and upper-right keys plus a weak centered front fill. `studio` remains a backward-compatible alias of `left_light`.
+Use `vanilla` by default for Minecraft recipe-book and inventory-style block icons. It uses unlit texture materials, deterministic per-face shading, the Standard color transform, zero exposure, no world illumination, and no render-engine shadows. This prevents EEVEE, AgX, specular response, or soft lights from shifting the source texture colors.
+
+Use `right_light` for promotional renders. It provides the strong upper-right studio key, softens the darkest face with a secondary light placed in the opposite direction at exactly 20% of the main key energy, and uses `0.20` exposure. `left_light` mirrors every directional light around the camera axis with identical energy, height, softness, fill ratio, material response, and exposure. Use `balanced` only when the prompt requests normalized faces; it uses equal upper-left and upper-right keys plus a weak centered front fill. `studio` remains a backward-compatible alias of `left_light`.
+
+The `vanilla` preset uses a `0.0075` default margin. For synthesized Java cube models it also rotates the top face texture `90` degrees clockwise; Bedrock horizontal-face rotation continues to use `--bedrock-horizontal-uv-rotation`.
 
 Use `neon` for Bedrock PBR packs whose blocks emit colored light. It reads adjacent `.texture_set.json` files, maps MER red/green/blue channels to metalness/emission/roughness, applies normal or height maps when present, and uses the block's `RP/local_lighting/local_lighting.json` color for a restrained emissive fill and rim. Non-emissive pixels stay physically lit instead of glowing uniformly.
+
+### Stable vanilla block batch
+
+Generate obtainable vanilla block icons from a synchronized
+`Mojang/bedrock-samples` checkout:
+
+```powershell
+python <skill-dir>/scripts/render_vanilla_blocks.py `
+  --source-root <bedrock-samples-folder> `
+  --output <render-folder> `
+  --overrides <jei-project>/tools/recipe-overrides.json `
+  --jobs 4
+```
+
+The command renders 80x80 PNGs with the `vanilla` preset. It excludes blocks
+that use item sprites, synthesizes common simple shapes, and writes
+`render-report.json` containing item-like, technical, unresolved, and complex
+geometry groups. The batch keeps a fixed full-block orthographic scale so
+partial shapes preserve their relative size, maps directional fronts to the
+right-hand visible face, and uses carried textures except for documented
+placed-texture exceptions. Use `--skip-existing` to resume. Use
+`--prune-stale` after changing classification so exact candidate PNGs that
+became item-like, technical, or complex are removed from the output folder.
+
+Vertical block textures are treated as flipbooks: retain the real image
+dimensions in each face specification and propagate that `texture_size`
+through the Java-model importer so UV `0..16` selects only the first 16x16
+frame. Heavy Core uses its three 8x8 regions from the shared 16x16 atlas.
+Keep floor-mounted partial shapes such as carpets, pressure plates, and closed
+trapdoors at block Y=0. Render and alpha-center them normally, then translate
+the finished 80x80 PNG downward by 17 pixels without resampling. This preserves
+their approved shading while placing them near the bottom of the full-block
+frame; do not alter framing with transparent geometry. Shulker
+Boxes are not synthetic cubes; render
+`models/entity/shulker_v1.0.geo.json` as `geometry.shulker` in its closed
+base pose with the matching `textures/entity/shulker/shulker_<color>` atlas.
+Hide the internal `head` bone and slightly inset the base in X/Z to avoid
+coplanar overlap with the lid without creating a horizontal gap.
+Fences, Fence Gates, and Walls must use the bundled Bedrock inventory
+geometries in `assets/vanilla_inventory_models/`; do not synthesize these
+families from generic boxes. The vanilla batch selects
+`geometry.fence_inventory`, `geometry.fence_gate_inventory`, or
+`geometry.wall_inventory` and applies the resolved side texture at the fixed
+full-block orthographic scale.
+
+### Stable vanilla entity batch
+
+Generate one canonical idle render for every spawn-egg mob in a synchronized
+`Mojang/bedrock-samples` checkout:
+
+```powershell
+python <skill-dir>/scripts/render_vanilla_entities.py `
+  --source-root <bedrock-samples-folder> `
+  --output <render-folder> `
+  --jobs 4
+```
+
+The command defaults to `--catalog mobs --pose curated`: projectiles,
+vehicles, dropped/technical entities, and other definitions without a spawn
+egg are excluded. Use `--catalog all` only when those client entities are
+explicitly requested.
+
+The batch renders transparent 80x80 PNGs with the `vanilla` preset and writes
+`render-report.json`. It prefers the unversioned client definition, otherwise
+the highest `_vN` definition, resolves modern `.geo.json` and legacy
+`models/mobs.json` geometries, and flattens legacy geometry inheritance into
+temporary files outside the source assets. Most mobs retain their standing
+bind pose. A small curated table applies static setup/idle transforms where
+the published bind geometry is an assembly pose, hides render-controller parts
+that are false in the canonical state, selects canonical textures such as the
+wild ocelot and elder guardian, composites the wandering-trader llama decor,
+and makes visible Blaze/Glow Squid atlas pixels fully opaque. The curated
+renderer also preserves Bedrock's signed X/Z bone rotations, distinguishes
+absolute pivot targets from relative animation offsets, and combines Breeze's
+body, eyes, and three wind render-controller passes at their authored origin.
+Use
+`--pose bind` for raw geometry or `--pose auto` for the generic animation
+heuristic.
+
+Each unique identifier gets one primary geometry and texture; all selections,
+pose transforms, hidden parts, texture layers, and warnings are recorded in
+the report. If Mojang's samples omit a referenced geometry, report the entity
+as unresolved rather than synthesizing a substitute model. Use
+`--skip-existing` to resume, `--include` for a comma-separated focused run,
+or `--classify-only` to inspect resolution without invoking Blender.
+
+For villager profession variants, render the same curated
+`geometry.villager_v2` pose with a 64x64 atlas composited in runtime order:
+adult base, one biome layer, one profession layer, and one level badge. Treat
+armorer, butcher, cartographer, cleric, farmer, fisherman, fletcher,
+leatherworker, librarian, shepherd, stonemason, toolsmith, and weaponsmith as
+the working professions; nitwit and unskilled are non-job variants. Bake a
+`[-90, 0, 0]` bind-pose rotation into the adult `brim` bone before rendering;
+the published adult geometry omits the rotation present in the equivalent
+zombie-villager geometry, otherwise wide hats render vertically in the face.
+Use `scripts/render_villager_professions.py` for this workflow.
 
 ## View mapping
 

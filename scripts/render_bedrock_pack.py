@@ -22,8 +22,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--background", default="transparent")
     parser.add_argument(
         "--lighting",
-        choices=["balanced", "left_light", "right_light", "studio", "flat", "dramatic", "neon"],
-        default="right_light",
+        choices=["vanilla", "balanced", "left_light", "right_light", "studio", "flat", "dramatic", "neon"],
+        default="vanilla",
     )
     parser.add_argument("--blender")
     parser.add_argument("--overrides", type=Path, help="JSON/JSONC block and path render overrides")
@@ -192,6 +192,8 @@ def main() -> None:
         if args.skip_existing and destination.is_file():
             skipped += 1
             continue
+        lighting = str(settings.get("lighting", args.lighting))
+        texture_filter = str(settings.get("texture_filter", "closest"))
         command = [
             sys.executable, str(launcher),
             "--model", str(render_model),
@@ -201,8 +203,8 @@ def main() -> None:
             "--view", str(settings.get("view", args.view)),
             "--resolution", str(settings.get("resolution", args.resolution)),
             "--background", args.background,
-            "--lighting", str(settings.get("lighting", args.lighting)),
-            "--texture-filter", "closest",
+            "--lighting", lighting,
+            "--texture-filter", texture_filter,
             "--material-permutation", args.material_permutation,
         ]
         if "model_rotation" in settings:

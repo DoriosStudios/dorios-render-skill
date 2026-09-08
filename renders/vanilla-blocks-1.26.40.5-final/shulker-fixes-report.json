@@ -1,0 +1,57 @@
+{
+  "source": {
+    "root": "C:\\Users\\chave\\Documents\\Github\\DoriosStudios\\Just-Enough-Items\\.cache\\bedrock-samples",
+    "version": "1.26.40.5"
+  },
+  "resolution": "80x80",
+  "lighting": "vanilla",
+  "candidates": 17,
+  "rendered": [
+    "black_shulker_box",
+    "blue_shulker_box",
+    "brown_shulker_box",
+    "cyan_shulker_box",
+    "gray_shulker_box",
+    "green_shulker_box",
+    "light_blue_shulker_box",
+    "light_gray_shulker_box",
+    "lime_shulker_box",
+    "magenta_shulker_box",
+    "orange_shulker_box",
+    "pink_shulker_box",
+    "purple_shulker_box",
+    "red_shulker_box",
+    "undyed_shulker_box",
+    "white_shulker_box",
+    "yellow_shulker_box"
+  ],
+  "existing": [],
+  "itemLike": [],
+  "complexGeometry": [],
+  "technical": [],
+  "pruned": [],
+  "unresolved": [],
+  "failed": [],
+  "shapeCounts": {
+    "cube": 17
+  },
+  "shapes": {
+    "black_shulker_box": "cube",
+    "blue_shulker_box": "cube",
+    "brown_shulker_box": "cube",
+    "cyan_shulker_box": "cube",
+    "gray_shulker_box": "cube",
+    "green_shulker_box": "cube",
+    "light_blue_shulker_box": "cube",
+    "light_gray_shulker_box": "cube",
+    "lime_shulker_box": "cube",
+    "magenta_shulker_box": "cube",
+    "orange_shulker_box": "cube",
+    "pink_shulker_box": "cube",
+    "purple_shulker_box": "cube",
+    "red_shulker_box": "cube",
+    "undyed_shulker_box": "cube",
+    "white_shulker_box": "cube",
+    "yellow_shulker_box": "cube"
+  }
+}

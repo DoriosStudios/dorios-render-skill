@@ -72,17 +72,17 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--ortho-scale", type=float)
     result.add_argument("--resolution", default="80x80")
     result.add_argument("--render-resolution", help="High-resolution Blender source; defaults to at least 1024 pixels")
-    result.add_argument("--margin", type=float, default=0.025)
+    result.add_argument("--margin", type=float)
     result.add_argument("--samples", type=int, default=64)
     result.add_argument("--background", default="transparent")
     result.add_argument(
         "--lighting",
-        choices=["balanced", "left_light", "right_light", "studio", "flat", "dramatic", "neon"],
-        default="right_light",
+        choices=["vanilla", "balanced", "left_light", "right_light", "studio", "flat", "dramatic", "neon"],
+        default="vanilla",
     )
     result.add_argument("--ground", choices=["auto", "on", "off"], default="auto")
     result.add_argument("--no-shadows", action="store_true")
-    result.add_argument("--texture-filter", choices=["closest", "linear"], default="closest")
+    result.add_argument("--texture-filter", choices=["vanilla", "closest", "linear"])
     result.add_argument(
         "--bedrock-horizontal-uv-rotation",
         type=int,
@@ -140,6 +140,8 @@ def main() -> None:
     source_output = Path(args.source_output).expanduser().resolve() if args.source_output else None
     if source_output:
         source_output.parent.mkdir(parents=True, exist_ok=True)
+    effective_margin = args.margin if args.margin is not None else (0.0075 if args.lighting == "vanilla" else 0.025)
+    effective_filter = args.texture_filter or "closest"
     final_size = dimensions(args.resolution, "resolution")
     render_size = source_dimensions(final_size, args.render_resolution)
     blender = Path(args.blender) if args.dry_run and args.blender else (
@@ -158,9 +160,9 @@ def main() -> None:
             "--azimuth", str(args.azimuth), "--elevation", str(args.elevation),
             "--model-rotation", args.model_rotation,
             "--resolution", f"{render_size[0]}x{render_size[1]}",
-            "--margin", str(args.margin), "--samples", str(args.samples),
+            "--margin", str(effective_margin), "--samples", str(args.samples),
             "--background", args.background, "--lighting", args.lighting,
-            "--ground", args.ground, "--texture-filter", args.texture_filter,
+            "--ground", args.ground, "--texture-filter", effective_filter,
             "--bedrock-horizontal-uv-rotation", str(args.bedrock_horizontal_uv_rotation),
             "--material-permutation", args.material_permutation,
         ]

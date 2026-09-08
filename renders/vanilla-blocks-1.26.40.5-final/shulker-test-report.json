@@ -1,0 +1,25 @@
+{
+  "source": {
+    "root": "C:\\Users\\chave\\Documents\\Github\\DoriosStudios\\Just-Enough-Items\\.cache\\bedrock-samples",
+    "version": "1.26.40.5"
+  },
+  "resolution": "80x80",
+  "lighting": "vanilla",
+  "candidates": 1,
+  "rendered": [
+    "purple_shulker_box"
+  ],
+  "existing": [],
+  "itemLike": [],
+  "complexGeometry": [],
+  "technical": [],
+  "pruned": [],
+  "unresolved": [],
+  "failed": [],
+  "shapeCounts": {
+    "cube": 1
+  },
+  "shapes": {
+    "purple_shulker_box": "cube"
+  }
+}

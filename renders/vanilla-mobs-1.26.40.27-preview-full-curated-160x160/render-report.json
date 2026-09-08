@@ -1,0 +1,5154 @@
+{
+  "source": "C:\\Users\\chave\\Downloads\\bedrock-samples-v1.26.40.27-preview-full",
+  "view": "iso-ne",
+  "resolution": "160x160",
+  "lighting": "vanilla",
+  "background": "transparent",
+  "catalog": "mobs",
+  "pose": "curated",
+  "poseTime": 0.0,
+  "definitions": 176,
+  "candidates": 92,
+  "catalogExcluded": [
+    "minecraft:armor_stand",
+    "minecraft:arrow",
+    "minecraft:bed",
+    "minecraft:boat",
+    "minecraft:breeze_wind_charge_projectile",
+    "minecraft:chest_boat",
+    "minecraft:chest_minecart",
+    "minecraft:command_block_minecart",
+    "minecraft:decorated_pot",
+    "minecraft:dragon_fireball",
+    "minecraft:egg",
+    "minecraft:ender_crystal",
+    "minecraft:ender_pearl",
+    "minecraft:evocation_fang",
+    "minecraft:eye_of_ender_signal",
+    "minecraft:fireball",
+    "minecraft:fireworks_rocket",
+    "minecraft:fishing_hook",
+    "minecraft:hopper_minecart",
+    "minecraft:leash_knot",
+    "minecraft:lingering_potion",
+    "minecraft:llama_spit",
+    "minecraft:minecart",
+    "minecraft:player",
+    "minecraft:shulker_bullet",
+    "minecraft:skull",
+    "minecraft:small_fireball",
+    "minecraft:snowball",
+    "minecraft:splash_potion",
+    "minecraft:thrown_trident",
+    "minecraft:tnt_minecart",
+    "minecraft:trial_spawner",
+    "minecraft:tripod_camera",
+    "minecraft:wind_charge_projectile",
+    "minecraft:wither_skull",
+    "minecraft:wither_skull_dangerous",
+    "minecraft:xp_bottle",
+    "minecraft:xp_orb"
+  ],
+  "rendered": [
+    "minecraft:agent",
+    "minecraft:allay",
+    "minecraft:armadillo",
+    "minecraft:axolotl",
+    "minecraft:bat",
+    "minecraft:bee",
+    "minecraft:blaze",
+    "minecraft:bogged",
+    "minecraft:breeze",
+    "minecraft:camel",
+    "minecraft:camel_husk",
+    "minecraft:cat",
+    "minecraft:cave_spider",
+    "minecraft:chicken",
+    "minecraft:cod",
+    "minecraft:copper_golem",
+    "minecraft:cow",
+    "minecraft:creaking",
+    "minecraft:creeper",
+    "minecraft:dolphin",
+    "minecraft:donkey",
+    "minecraft:drowned",
+    "minecraft:elder_guardian",
+    "minecraft:ender_dragon",
+    "minecraft:enderman",
+    "minecraft:endermite",
+    "minecraft:evocation_illager",
+    "minecraft:fox",
+    "minecraft:frog",
+    "minecraft:ghast",
+    "minecraft:glow_squid",
+    "minecraft:goat",
+    "minecraft:guardian",
+    "minecraft:happy_ghast",
+    "minecraft:hoglin",
+    "minecraft:horse",
+    "minecraft:husk",
+    "minecraft:iron_golem",
+    "minecraft:llama",
+    "minecraft:magma_cube",
+    "minecraft:mooshroom",
+    "minecraft:mule",
+    "minecraft:nautilus",
+    "minecraft:npc",
+    "minecraft:ocelot",
+    "minecraft:panda",
+    "minecraft:parched",
+    "minecraft:parrot",
+    "minecraft:phantom",
+    "minecraft:pig",
+    "minecraft:piglin",
+    "minecraft:piglin_brute",
+    "minecraft:pillager",
+    "minecraft:polar_bear",
+    "minecraft:pufferfish",
+    "minecraft:rabbit",
+    "minecraft:ravager",
+    "minecraft:salmon",
+    "minecraft:sheep",
+    "minecraft:shulker",
+    "minecraft:silverfish",
+    "minecraft:skeleton",
+    "minecraft:skeleton_horse",
+    "minecraft:slime",
+    "minecraft:sniffer",
+    "minecraft:snow_golem",
+    "minecraft:spider",
+    "minecraft:squid",
+    "minecraft:stray",
+    "minecraft:strider",
+    "minecraft:sulfur_cube",
+    "minecraft:tadpole",
+    "minecraft:trader_llama",
+    "minecraft:tropicalfish",
+    "minecraft:turtle",
+    "minecraft:vex",
+    "minecraft:villager",
+    "minecraft:villager_v2",
+    "minecraft:vindicator",
+    "minecraft:wandering_trader",
+    "minecraft:warden",
+    "minecraft:witch",
+    "minecraft:wither",
+    "minecraft:wither_skeleton",
+    "minecraft:wolf",
+    "minecraft:zoglin",
+    "minecraft:zombie",
+    "minecraft:zombie_horse",
+    "minecraft:zombie_nautilus",
+    "minecraft:zombie_pigman",
+    "minecraft:zombie_villager",
+    "minecraft:zombie_villager_v2"
+  ],
+  "existing": [],
+  "unresolved": [],
+  "failed": [],
+  "invalidDefinitions": [],
+  "invalidGeometries": [],
+  "invalidAnimations": [],
+  "entities": {
+    "minecraft:agent": {
+      "definition": "agent.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "default"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.agent",
+      "model": "models\\mobs.json",
+      "textureKey": "default",
+      "texture": "textures/entity/agent",
+      "textureFile": "textures\\entity\\agent.png",
+      "poseAnimations": []
+    },
+    "minecraft:allay": {
+      "definition": "allay.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "default"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.allay",
+      "model": "models\\entity\\allay.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/allay/allay",
+      "textureFile": "textures\\entity\\allay\\allay.png",
+      "poseAnimations": []
+    },
+    "minecraft:armadillo": {
+      "definition": "armadillo.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default",
+        "baby"
+      ],
+      "textureKeys": [
+        "default",
+        "baby"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.armadillo",
+      "model": "models\\entity\\armadillo.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/armadillo",
+      "textureFile": "textures\\entity\\armadillo.png",
+      "poseAnimations": []
+    },
+    "minecraft:axolotl": {
+      "definition": "axolotl.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default",
+        "baby"
+      ],
+      "textureKeys": [
+        "blue",
+        "cyan",
+        "gold",
+        "lucy",
+        "wild",
+        "baby_blue",
+        "baby_cyan",
+        "baby_gold",
+        "baby_lucy",
+        "baby_wild"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.axolotl",
+      "model": "models\\entity\\axolotl.geo.json",
+      "textureKey": "blue",
+      "texture": "textures/entity/axolotl/axolotl_blue",
+      "textureFile": "textures\\entity\\axolotl\\axolotl_blue.png",
+      "poseAnimations": []
+    },
+    "minecraft:bat": {
+      "definition": "bat.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "default"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.bat_v2",
+      "model": "models\\entity\\bat_v2.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/bat_v2",
+      "textureFile": "textures\\entity\\bat_v2.png",
+      "poseAnimations": []
+    },
+    "minecraft:bee": {
+      "definition": "bee.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default",
+        "baby"
+      ],
+      "textureKeys": [
+        "default",
+        "angry",
+        "nectar",
+        "angry_nectar",
+        "baby_default",
+        "baby_angry",
+        "baby_nectar",
+        "baby_angry_nectar"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.bee",
+      "model": "models\\entity\\bee.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/bee/bee",
+      "textureFile": "textures\\entity\\bee\\bee.png",
+      "poseAnimations": []
+    },
+    "minecraft:blaze": {
+      "definition": "blaze.entity.json",
+      "alternativeDefinitions": [
+        "blaze.v1.0.entity.json"
+      ],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "default"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.blaze",
+      "model": "models\\entity\\blaze.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/blaze",
+      "textureFile": "textures\\entity\\blaze.tga",
+      "alphaMode": "opaque-visible-pixels",
+      "poseAnimations": [
+        {
+          "alias": "curated",
+          "identifier": "animation.blaze.move",
+          "file": "animations\\blaze.animation.json"
+        }
+      ],
+      "poseTransforms": {
+        "upperBodyParts0": {
+          "position": [
+            9.0,
+            3.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "upperBodyParts1": {
+          "position": [
+            5.51091059616309e-16,
+            2.877648571535067,
+            9.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "upperBodyParts10": {
+          "position": [
+            -4.455032620941839,
+            -11.821149209133704,
+            -2.2699524986977333
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "upperBodyParts11": {
+          "position": [
+            2.2699524986977333,
+            -11.55513480041218,
+            -4.45503262094184
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "upperBodyParts2": {
+          "position": [
+            -9.0,
+            2.5405340302350874,
+            1.102182119232618e-15
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "upperBodyParts3": {
+          "position": [
+            -1.6532731788489267e-15,
+            2.071149267468767,
+            -9.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "upperBodyParts4": {
+          "position": [
+            4.949747468305833,
+            -2.4156459243156276,
+            4.949747468305833
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "upperBodyParts5": {
+          "position": [
+            -4.949747468305832,
+            -2.8007313709487334,
+            4.949747468305833
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "upperBodyParts6": {
+          "position": [
+            -4.949747468305834,
+            -2.989875563477316,
+            -4.949747468305832
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "upperBodyParts7": {
+          "position": [
+            4.949747468305832,
+            -2.9367943776179377,
+            -4.949747468305834
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "upperBodyParts8": {
+          "position": [
+            4.455032620941839,
+            -11.989875563477316,
+            2.2699524986977337
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "upperBodyParts9": {
+          "position": [
+            -2.2699524986977337,
+            -11.973098510982126,
+            4.455032620941839
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      }
+    },
+    "minecraft:bogged": {
+      "definition": "bogged.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default",
+        "overlay"
+      ],
+      "textureKeys": [
+        "default",
+        "overlay"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.skeleton.bogged",
+      "model": "models\\entity\\bogged.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/skeleton/bogged",
+      "textureFile": "textures\\entity\\skeleton\\bogged.png",
+      "poseAnimations": []
+    },
+    "minecraft:breeze": {
+      "definition": "breeze.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default",
+        "breeze_eyes",
+        "breeze_wind_top",
+        "breeze_wind_mid",
+        "breeze_wind_bottom"
+      ],
+      "textureKeys": [
+        "default",
+        "breeze_wind",
+        "breeze_eyes"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.breeze",
+      "model": "models\\entity\\breeze.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/breeze/breeze",
+      "textureFile": "textures\\entity\\breeze\\breeze.png",
+      "poseAnimations": [
+        {
+          "alias": "curated",
+          "identifier": "animation.breeze.idle",
+          "file": "animations\\breeze.animation.json"
+        }
+      ],
+      "poseTransforms": {
+        "tornado_top": {
+          "position": [
+            0.5,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "tornado_mid": {
+          "position": [
+            0.5,
+            0.0,
+            -0.5
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "head": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "rods": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      },
+      "renderLayers": [
+        {
+          "name": "body",
+          "geometry": "geometry.breeze",
+          "texture": "textures/entity/breeze/breeze"
+        },
+        {
+          "name": "eyes",
+          "geometry": "geometry.breeze_eyes",
+          "texture": "textures/entity/breeze/breeze_eyes"
+        },
+        {
+          "name": "wind_top",
+          "geometry": "geometry.breeze_wind_top",
+          "texture": "textures/entity/breeze/breeze_wind"
+        },
+        {
+          "name": "wind_mid",
+          "geometry": "geometry.breeze_wind_mid",
+          "texture": "textures/entity/breeze/breeze_wind"
+        },
+        {
+          "name": "wind_bottom",
+          "geometry": "geometry.breeze_wind_bottom",
+          "texture": "textures/entity/breeze/breeze_wind"
+        }
+      ]
+    },
+    "minecraft:camel": {
+      "definition": "camel.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default",
+        "baby"
+      ],
+      "textureKeys": [
+        "default",
+        "baby"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.camel",
+      "model": "models\\entity\\camel.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/camel/camel",
+      "textureFile": "textures\\entity\\camel\\camel.png",
+      "poseAnimations": [
+        {
+          "alias": "curated",
+          "identifier": "animation.camel.idle",
+          "file": "animations\\camel.animation.json"
+        }
+      ],
+      "poseTransforms": {
+        "head": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "tail": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            5.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "left_ear": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            -45.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "right_ear": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            45.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      }
+    },
+    "minecraft:camel_husk": {
+      "definition": "camel_husk.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "default"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.camel_husk",
+      "model": "models\\entity\\camel_husk.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/camel_husk/camel_husk",
+      "textureFile": "textures\\entity\\camel_husk\\camel_husk.png",
+      "poseAnimations": [
+        {
+          "alias": "curated",
+          "identifier": "animation.camel.idle",
+          "file": "animations\\camel.animation.json"
+        }
+      ],
+      "poseTransforms": {
+        "head": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "tail": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            5.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "left_ear": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            -45.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "right_ear": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            45.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      }
+    },
+    "minecraft:cat": {
+      "definition": "cat.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default",
+        "baby"
+      ],
+      "textureKeys": [
+        "white",
+        "black",
+        "red",
+        "siamese",
+        "british",
+        "calico",
+        "persian",
+        "ragdoll",
+        "tabby",
+        "jellie",
+        "all_black",
+        "white_tame",
+        "black_tame",
+        "red_tame",
+        "siamese_tame",
+        "british_tame",
+        "calico_tame",
+        "persian_tame",
+        "ragdoll_tame",
+        "tabby_tame",
+        "all_black_tame",
+        "jellie_tame",
+        "baby_white",
+        "baby_black",
+        "baby_red",
+        "baby_siamese",
+        "baby_british",
+        "baby_calico",
+        "baby_persian",
+        "baby_ragdoll",
+        "baby_tabby",
+        "baby_jellie",
+        "baby_all_black",
+        "baby_white_tame",
+        "baby_black_tame",
+        "baby_red_tame",
+        "baby_siamese_tame",
+        "baby_british_tame",
+        "baby_calico_tame",
+        "baby_persian_tame",
+        "baby_ragdoll_tame",
+        "baby_tabby_tame",
+        "baby_all_black_tame",
+        "baby_jellie_tame"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.cat",
+      "model": "models\\entity\\cat.geo.json",
+      "curatedBindPoseRotations": {
+        "body": [
+          90.0,
+          0.0,
+          0.0
+        ]
+      },
+      "textureKey": "white",
+      "texture": "textures/entity/cat/white",
+      "textureFile": "textures\\entity\\cat\\white.png",
+      "poseAnimations": [
+        {
+          "alias": "curated",
+          "identifier": "animation.ocelot.walk",
+          "file": "animations\\ocelot.animation.json"
+        }
+      ],
+      "poseTransforms": {
+        "backLegL": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "backLegR": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "frontLegL": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "frontLegR": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "tail1": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            -51.57,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "tail2": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            62.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      }
+    },
+    "minecraft:cave_spider": {
+      "definition": "cave_spider.entity.json",
+      "alternativeDefinitions": [
+        "cave_spider.v1.0.entity.json"
+      ],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "default"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.spider.v1.8",
+      "model": "models\\entity\\spider.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/spider/cave_spider",
+      "textureFile": "textures\\entity\\spider\\cave_spider.tga",
+      "poseAnimations": [
+        {
+          "alias": "curated",
+          "identifier": "animation.spider.default_leg_pose",
+          "file": "animations\\spider.animation.json"
+        }
+      ],
+      "poseTransforms": {
+        "leg0": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            45.0,
+            -45.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "leg1": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            -45.0,
+            45.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "leg2": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            22.5,
+            -33.3
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "leg3": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            -22.5,
+            33.3
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "leg4": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            -22.5,
+            -33.3
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "leg5": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            22.5,
+            33.3
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "leg6": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            -45.0,
+            -45.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "leg7": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            45.0,
+            45.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      }
+    },
+    "minecraft:chicken": {
+      "definition": "chicken.entity.json",
+      "alternativeDefinitions": [
+        "chicken.v1.0.entity.json"
+      ],
+      "geometryKeys": [
+        "default",
+        "warm",
+        "cold",
+        "baby"
+      ],
+      "textureKeys": [
+        "default",
+        "warm",
+        "cold",
+        "baby_default",
+        "baby_warm",
+        "baby_cold"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.chicken.v1.12",
+      "model": "models\\entity\\chicken.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/chicken/chicken",
+      "textureFile": "textures\\entity\\chicken\\chicken.png",
+      "poseAnimations": []
+    },
+    "minecraft:cod": {
+      "definition": "cod.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "default"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.cod",
+      "model": "models\\entity\\cod.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/fish/cod",
+      "textureFile": "textures\\entity\\fish\\cod.png",
+      "poseAnimations": []
+    },
+    "minecraft:copper_golem": {
+      "definition": "copper_golem.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default",
+        "flower",
+        "standing",
+        "sitting",
+        "running",
+        "star"
+      ],
+      "textureKeys": [
+        "default",
+        "exposed",
+        "weathered",
+        "oxidized",
+        "eyes_default",
+        "eyes_exposed",
+        "eyes_weathered",
+        "eyes_oxidized",
+        "flower"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.copper_golem",
+      "model": "models\\entity\\copper_golem.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/copper_golem/copper_golem",
+      "textureFile": "textures\\entity\\copper_golem\\copper_golem.png",
+      "poseAnimations": []
+    },
+    "minecraft:cow": {
+      "definition": "cow.entity.json",
+      "alternativeDefinitions": [
+        "cow.v1.0.entity.json"
+      ],
+      "geometryKeys": [
+        "default",
+        "warm",
+        "cold",
+        "baby"
+      ],
+      "textureKeys": [
+        "default",
+        "warm",
+        "cold",
+        "baby_default",
+        "baby_cold",
+        "baby_warm"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.cow.v2",
+      "model": "models\\entity\\cow.v2.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/cow/cow_v2",
+      "textureFile": "textures\\entity\\cow\\cow_v2.png",
+      "poseAnimations": []
+    },
+    "minecraft:creaking": {
+      "definition": "creaking.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "default",
+        "eyes"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.creaking",
+      "model": "models\\entity\\creaking.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/creaking/creaking",
+      "textureFile": "textures\\entity\\creaking\\creaking.png",
+      "poseAnimations": []
+    },
+    "minecraft:creeper": {
+      "definition": "creeper.entity.json",
+      "alternativeDefinitions": [
+        "creeper.v1.0.entity.json"
+      ],
+      "geometryKeys": [
+        "default",
+        "charged"
+      ],
+      "textureKeys": [
+        "default",
+        "charged"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.creeper.v1.8",
+      "model": "models\\entity\\creeper.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/creeper/creeper",
+      "textureFile": "textures\\entity\\creeper\\creeper.png",
+      "poseAnimations": []
+    },
+    "minecraft:dolphin": {
+      "definition": "dolphin.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default",
+        "baby"
+      ],
+      "textureKeys": [
+        "default",
+        "baby"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.dolphin",
+      "model": "models\\entity\\dolphin.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/dolphin",
+      "textureFile": "textures\\entity\\dolphin.png",
+      "poseAnimations": []
+    },
+    "minecraft:donkey": {
+      "definition": "donkey_v3.entity.json",
+      "alternativeDefinitions": [
+        "donkey_v2.entity.json",
+        "donkey_v1.entity.json"
+      ],
+      "geometryKeys": [
+        "default",
+        "baby"
+      ],
+      "textureKeys": [
+        "donkey",
+        "markings_none",
+        "armor_none",
+        "baby_donkey"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.horse.v3",
+      "model": "models\\entity\\horse_v3.geo.json",
+      "textureKey": "donkey",
+      "texture": "textures/entity/horse2/donkey",
+      "textureFile": "textures\\entity\\horse2\\donkey.png",
+      "poseAnimations": [],
+      "hiddenBones": [
+        "EarL",
+        "EarR",
+        "Saddle",
+        "BitL",
+        "BitR",
+        "Bridle",
+        "ReinsL",
+        "ReinsR",
+        "BagL",
+        "BagR"
+      ]
+    },
+    "minecraft:drowned": {
+      "definition": "drowned.entity.json",
+      "alternativeDefinitions": [
+        "drowned.v1.0.entity.json"
+      ],
+      "geometryKeys": [
+        "default",
+        "baby"
+      ],
+      "textureKeys": [
+        "default",
+        "baby"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.zombie.drowned.v1.16",
+      "model": "models\\entity\\drowned.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/zombie/drowned",
+      "textureFile": "textures\\entity\\zombie\\drowned.tga",
+      "poseAnimations": []
+    },
+    "minecraft:elder_guardian": {
+      "definition": "elder_guardian.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default",
+        "ghost"
+      ],
+      "textureKeys": [
+        "default",
+        "elder",
+        "beam"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.guardian.v1.8",
+      "model": "models\\entity\\guardian.geo.json",
+      "textureKey": "elder",
+      "texture": "textures/entity/guardian_elder",
+      "textureFile": "textures\\entity\\guardian_elder.png",
+      "poseAnimations": [
+        {
+          "alias": "curated",
+          "identifier": "animation.guardian.setup",
+          "file": "animations\\guardian.animation.json"
+        },
+        {
+          "alias": "curated",
+          "identifier": "animation.guardian.spikes",
+          "file": "animations\\guardian.animation.json"
+        },
+        {
+          "alias": "curated",
+          "identifier": "animation.guardian.swim",
+          "file": "animations\\guardian.animation.json"
+        },
+        {
+          "alias": "curated",
+          "identifier": "animation.guardian.move_eye",
+          "file": "animations\\guardian.animation.json"
+        }
+      ],
+      "poseTransforms": {
+        "spikepart0": {
+          "position": [
+            0.0,
+            -12.48,
+            3.6799999999999997
+          ],
+          "rotation": [
+            -45.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "spikepart1": {
+          "position": [
+            0.0,
+            -12.479987815612512,
+            -3.6799878156125114
+          ],
+          "rotation": [
+            45.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "spikepart10": {
+          "position": [
+            3.678784620240977,
+            -19.52121537975902,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            135.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "spikepart11": {
+          "position": [
+            -3.678530174675812,
+            -19.52146982532419,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            -135.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "spikepart2": {
+          "position": [
+            3.6799512661615275,
+            -12.479951266161528,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            45.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "spikepart3": {
+          "position": [
+            -3.679890362780366,
+            -12.479890362780367,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            -45.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "spikepart4": {
+          "position": [
+            -3.6798051240207847,
+            -16.0,
+            -3.6798051240207847
+          ],
+          "rotation": [
+            90.0,
+            45.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "spikepart5": {
+          "position": [
+            3.6796955758473384,
+            -16.0,
+            -3.6796955758473384
+          ],
+          "rotation": [
+            90.0,
+            -45.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "spikepart6": {
+          "position": [
+            3.6795617516294623,
+            -16.0,
+            3.6795617516294623
+          ],
+          "rotation": [
+            90.0,
+            -135.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "spikepart7": {
+          "position": [
+            -3.679403692131306,
+            -16.0,
+            3.679403692131306
+          ],
+          "rotation": [
+            90.0,
+            135.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "spikepart8": {
+          "position": [
+            0.0,
+            -19.520778554500673,
+            3.6792214454993246
+          ],
+          "rotation": [
+            -135.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "spikepart9": {
+          "position": [
+            0.0,
+            -19.52098493275239,
+            -3.67901506724761
+          ],
+          "rotation": [
+            135.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "tailpart0": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "tailpart1": {
+          "position": [
+            -1.5,
+            -0.5,
+            14.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "tailpart2": {
+          "position": [
+            0.5,
+            -0.5,
+            6.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "eye": {
+          "position": [
+            0.0,
+            0.0,
+            -8.25
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      }
+    },
+    "minecraft:ender_dragon": {
+      "definition": "ender_dragon.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "default",
+        "exploding",
+        "beam"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.dragon",
+      "model": "models\\entity\\ender_dragon.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/dragon/dragon",
+      "textureFile": "textures\\entity\\dragon\\dragon.tga",
+      "poseAnimations": [
+        {
+          "alias": "curated",
+          "identifier": "animation.ender_dragon.wings_limbs_movement",
+          "file": "animations\\ender_dragon.animation.json"
+        }
+      ],
+      "poseTransforms": {
+        "wing": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            -4.300000000000001,
+            0.0,
+            5.73
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "wingtip": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            -60.59715268902395
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "wing1": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            -4.300000000000001,
+            0.0,
+            5.73
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "wingtip1": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            60.59715268902395
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "rearleg": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            57.3,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "rearlegtip": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            28.65,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "rearfoot": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            43.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "frontleg": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            74.5,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "frontlegtip": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            -28.65,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "frontfoot": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            43.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "rearleg1": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            57.3,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "rearlegtip1": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            28.65,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "rearfoot1": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            43.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "frontleg1": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            74.5,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "frontlegtip1": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            -28.65,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "frontfoot1": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            43.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      }
+    },
+    "minecraft:enderman": {
+      "definition": "enderman.entity.json",
+      "alternativeDefinitions": [
+        "enderman.v1.0.entity.json"
+      ],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "default"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.enderman.v1.8",
+      "model": "models\\entity\\enderman.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/enderman/enderman",
+      "textureFile": "textures\\entity\\enderman\\enderman.tga",
+      "alphaMode": "opaque-visible-pixels",
+      "poseAnimations": [
+        {
+          "alias": "curated",
+          "identifier": "animation.enderman.base_pose",
+          "file": "animations\\enderman.animation.json"
+        },
+        {
+          "alias": "curated",
+          "identifier": "animation.enderman.arms_legs",
+          "file": "animations\\enderman.animation.json"
+        }
+      ],
+      "poseTransforms": {
+        "body": {
+          "position": [
+            0.0,
+            11.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "hat": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "head": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "leftArm": {
+          "position": [
+            4.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "leftLeg": {
+          "position": [
+            0.0,
+            -5.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "rightArm": {
+          "position": [
+            -4.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "rightLeg": {
+          "position": [
+            0.0,
+            -5.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      }
+    },
+    "minecraft:endermite": {
+      "definition": "endermite.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "default"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.endermite",
+      "model": "models\\entity\\endermite.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/endermite",
+      "textureFile": "textures\\entity\\endermite.png",
+      "poseAnimations": []
+    },
+    "minecraft:evocation_illager": {
+      "definition": "evocation_illager.entity.json",
+      "alternativeDefinitions": [
+        "evocation_illager.v1.0.entity.json"
+      ],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "default"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.evoker.v1.8",
+      "model": "models\\entity\\evoker.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/illager/evoker",
+      "textureFile": "textures\\entity\\illager\\evoker.png",
+      "poseAnimations": [
+        {
+          "alias": "curated",
+          "identifier": "animation.evoker.general",
+          "file": "animations\\evoker.animation.json"
+        }
+      ],
+      "poseTransforms": {
+        "arms": {
+          "position": [
+            0.0,
+            -3.0,
+            -1.0
+          ],
+          "rotation": [
+            -42.97,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "leftArm": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "rightArm": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      }
+    },
+    "minecraft:fox": {
+      "definition": "fox.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default",
+        "baby"
+      ],
+      "textureKeys": [
+        "red",
+        "arctic",
+        "baby_red",
+        "baby_arctic",
+        "baby_sleep_red",
+        "baby_sleep_arctic"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.fox",
+      "model": "models\\entity\\fox.geo.json",
+      "textureKey": "red",
+      "texture": "textures/entity/fox/fox",
+      "textureFile": "textures\\entity\\fox\\fox.png",
+      "poseAnimations": []
+    },
+    "minecraft:frog": {
+      "definition": "frog.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "temperate",
+        "cold",
+        "warm"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.frog",
+      "model": "models\\entity\\frog.geo.json",
+      "textureKey": "temperate",
+      "texture": "textures/entity/frog/temperate_frog",
+      "textureFile": "textures\\entity\\frog\\temperate_frog.png",
+      "poseAnimations": []
+    },
+    "minecraft:ghast": {
+      "definition": "ghast.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "default",
+        "shooting"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.ghast",
+      "model": "models\\entity\\ghast.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/ghast/ghast",
+      "textureFile": "textures\\entity\\ghast\\ghast.png",
+      "poseAnimations": []
+    },
+    "minecraft:glow_squid": {
+      "definition": "glow_squid.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default",
+        "baby"
+      ],
+      "textureKeys": [
+        "default",
+        "baby"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.squid",
+      "model": "models\\entity\\squid.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/glow_squid/glow_squid",
+      "textureFile": "textures\\entity\\glow_squid\\glow_squid.tga",
+      "alphaMode": "opaque-visible-pixels",
+      "poseAnimations": [
+        {
+          "alias": "curated",
+          "identifier": "animation.squid.move",
+          "file": "animations\\squid.animation.json"
+        }
+      ],
+      "poseTransforms": {
+        "body": {
+          "position": [
+            0.0,
+            7.5,
+            1.8
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "tentacle1": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            180.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "tentacle2": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            90.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "tentacle3": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "tentacle4": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            -90.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "tentacle5": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            -180.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "tentacle6": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            -270.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "tentacle7": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            -360.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "tentacle8": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            -450.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      }
+    },
+    "minecraft:goat": {
+      "definition": "goat.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default",
+        "baby"
+      ],
+      "textureKeys": [
+        "default",
+        "baby"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.goat",
+      "model": "models\\entity\\goat.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/goat/goat",
+      "textureFile": "textures\\entity\\goat\\goat.png",
+      "poseAnimations": []
+    },
+    "minecraft:guardian": {
+      "definition": "guardian.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default",
+        "ghost"
+      ],
+      "textureKeys": [
+        "default",
+        "elder",
+        "beam"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.guardian.v1.8",
+      "model": "models\\entity\\guardian.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/guardian",
+      "textureFile": "textures\\entity\\guardian.png",
+      "poseAnimations": [
+        {
+          "alias": "curated",
+          "identifier": "animation.guardian.setup",
+          "file": "animations\\guardian.animation.json"
+        },
+        {
+          "alias": "curated",
+          "identifier": "animation.guardian.spikes",
+          "file": "animations\\guardian.animation.json"
+        },
+        {
+          "alias": "curated",
+          "identifier": "animation.guardian.swim",
+          "file": "animations\\guardian.animation.json"
+        },
+        {
+          "alias": "curated",
+          "identifier": "animation.guardian.move_eye",
+          "file": "animations\\guardian.animation.json"
+        }
+      ],
+      "poseTransforms": {
+        "spikepart0": {
+          "position": [
+            0.0,
+            -12.48,
+            3.6799999999999997
+          ],
+          "rotation": [
+            -45.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "spikepart1": {
+          "position": [
+            0.0,
+            -12.479987815612512,
+            -3.6799878156125114
+          ],
+          "rotation": [
+            45.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "spikepart10": {
+          "position": [
+            3.678784620240977,
+            -19.52121537975902,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            135.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "spikepart11": {
+          "position": [
+            -3.678530174675812,
+            -19.52146982532419,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            -135.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "spikepart2": {
+          "position": [
+            3.6799512661615275,
+            -12.479951266161528,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            45.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "spikepart3": {
+          "position": [
+            -3.679890362780366,
+            -12.479890362780367,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            -45.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "spikepart4": {
+          "position": [
+            -3.6798051240207847,
+            -16.0,
+            -3.6798051240207847
+          ],
+          "rotation": [
+            90.0,
+            45.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "spikepart5": {
+          "position": [
+            3.6796955758473384,
+            -16.0,
+            -3.6796955758473384
+          ],
+          "rotation": [
+            90.0,
+            -45.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "spikepart6": {
+          "position": [
+            3.6795617516294623,
+            -16.0,
+            3.6795617516294623
+          ],
+          "rotation": [
+            90.0,
+            -135.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "spikepart7": {
+          "position": [
+            -3.679403692131306,
+            -16.0,
+            3.679403692131306
+          ],
+          "rotation": [
+            90.0,
+            135.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "spikepart8": {
+          "position": [
+            0.0,
+            -19.520778554500673,
+            3.6792214454993246
+          ],
+          "rotation": [
+            -135.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "spikepart9": {
+          "position": [
+            0.0,
+            -19.52098493275239,
+            -3.67901506724761
+          ],
+          "rotation": [
+            135.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "tailpart0": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "tailpart1": {
+          "position": [
+            -1.5,
+            -0.5,
+            14.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "tailpart2": {
+          "position": [
+            0.5,
+            -0.5,
+            6.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "eye": {
+          "position": [
+            0.0,
+            0.0,
+            -8.25
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      }
+    },
+    "minecraft:happy_ghast": {
+      "definition": "happy_ghast.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default",
+        "ropes"
+      ],
+      "textureKeys": [
+        "ghastling",
+        "happy_ghast",
+        "ropes"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.happy_ghast",
+      "model": "models\\entity\\happy_ghast.geo.json",
+      "textureKey": "happy_ghast",
+      "texture": "textures/entity/happy_ghast/happy_ghast",
+      "textureFile": "textures\\entity\\happy_ghast\\happy_ghast.png",
+      "poseAnimations": []
+    },
+    "minecraft:hoglin": {
+      "definition": "hoglin.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default",
+        "baby"
+      ],
+      "textureKeys": [
+        "default",
+        "baby"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.hoglin",
+      "model": "models\\entity\\hoglin.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/hoglin/hoglin",
+      "textureFile": "textures\\entity\\hoglin\\hoglin.png",
+      "poseAnimations": []
+    },
+    "minecraft:horse": {
+      "definition": "horse_v3.entity.json",
+      "alternativeDefinitions": [
+        "horse_v2.entity.json",
+        "horse_v1.entity.json"
+      ],
+      "geometryKeys": [
+        "default",
+        "baby"
+      ],
+      "textureKeys": [
+        "base_brown",
+        "base_white",
+        "base_creamy",
+        "base_chestnut",
+        "base_black",
+        "base_gray",
+        "base_darkbrown",
+        "markings_none",
+        "markings_white",
+        "markings_whitefield",
+        "markings_whitedots",
+        "markings_blackdots",
+        "armor_none",
+        "armor_leather",
+        "armor_iron",
+        "armor_gold",
+        "armor_diamond",
+        "armor_copper",
+        "armor_netherite",
+        "baby_base_brown",
+        "baby_base_white",
+        "baby_base_creamy",
+        "baby_base_chestnut",
+        "baby_base_black",
+        "baby_base_gray",
+        "baby_base_darkbrown",
+        "baby_markings_white",
+        "baby_markings_whitefield",
+        "baby_markings_whitedots",
+        "baby_markings_blackdots"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.horse.v3",
+      "model": "models\\entity\\horse_v3.geo.json",
+      "textureKey": "base_brown",
+      "texture": "textures/entity/horse2/horse_brown",
+      "textureFile": "textures\\entity\\horse2\\horse_brown.png",
+      "poseAnimations": []
+    },
+    "minecraft:husk": {
+      "definition": "husk.entity.json",
+      "alternativeDefinitions": [
+        "husk.v1.0.entity.json"
+      ],
+      "geometryKeys": [
+        "default",
+        "baby"
+      ],
+      "textureKeys": [
+        "default",
+        "baby"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.zombie.husk.v1.8",
+      "model": "models\\entity\\husk.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/zombie/husk",
+      "textureFile": "textures\\entity\\zombie\\husk.png",
+      "poseAnimations": []
+    },
+    "minecraft:iron_golem": {
+      "definition": "iron_golem.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "default",
+        "cracked_high",
+        "cracked_med",
+        "cracked_low",
+        "cracked_none"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.irongolem",
+      "model": "models\\entity\\iron_golem.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/iron_golem",
+      "textureFile": "textures\\entity\\iron_golem.png",
+      "poseAnimations": []
+    },
+    "minecraft:llama": {
+      "definition": "llama.entity.json",
+      "alternativeDefinitions": [
+        "llama.v1.0.entity.json"
+      ],
+      "geometryKeys": [
+        "default",
+        "baby"
+      ],
+      "textureKeys": [
+        "creamy",
+        "white",
+        "brown",
+        "gray",
+        "decor_none",
+        "decor_white",
+        "decor_orange",
+        "decor_magenta",
+        "decor_light_blue",
+        "decor_yellow",
+        "decor_lime",
+        "decor_pink",
+        "decor_gray",
+        "decor_silver",
+        "decor_cyan",
+        "decor_purple",
+        "decor_blue",
+        "decor_brown",
+        "decor_green",
+        "decor_red",
+        "decor_black",
+        "decor_wandering_trader",
+        "baby_creamy",
+        "baby_white",
+        "baby_brown",
+        "baby_gray",
+        "baby_decor_wandering_trader"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.llama.v1.8",
+      "model": "models\\entity\\llama.geo.json",
+      "curatedBindPoseRotations": {
+        "body": [
+          90.0,
+          0.0,
+          0.0
+        ]
+      },
+      "textureKey": "creamy",
+      "texture": "textures/entity/llama/llama_creamy",
+      "textureFile": "textures\\entity\\llama\\llama_creamy.png",
+      "poseAnimations": []
+    },
+    "minecraft:magma_cube": {
+      "definition": "magma_cube.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "default"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.magma_cube_v2",
+      "model": "models\\entity\\magma_cube_v2.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/slime/magmacube_v2",
+      "textureFile": "textures\\entity\\slime\\magmacube_v2.tga",
+      "poseAnimations": []
+    },
+    "minecraft:mooshroom": {
+      "definition": "mooshroom.entity.json",
+      "alternativeDefinitions": [
+        "mooshroom.v1.0.entity.json"
+      ],
+      "geometryKeys": [
+        "default",
+        "baby"
+      ],
+      "textureKeys": [
+        "default",
+        "brown",
+        "baby_default",
+        "baby_brown"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.mooshroom.v2",
+      "model": "models\\entity\\mooshroom.v2.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/cow/mooshroom_v2",
+      "textureFile": "textures\\entity\\cow\\mooshroom_v2.png",
+      "poseAnimations": []
+    },
+    "minecraft:mule": {
+      "definition": "mule_v3.entity.json",
+      "alternativeDefinitions": [
+        "mule_v2.entity.json",
+        "mule_v1.entity.json"
+      ],
+      "geometryKeys": [
+        "default",
+        "baby"
+      ],
+      "textureKeys": [
+        "mule",
+        "markings_none",
+        "armor_none",
+        "baby_mule"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.horse.v3",
+      "model": "models\\entity\\horse_v3.geo.json",
+      "textureKey": "mule",
+      "texture": "textures/entity/horse2/mule",
+      "textureFile": "textures\\entity\\horse2\\mule.png",
+      "poseAnimations": []
+    },
+    "minecraft:nautilus": {
+      "definition": "nautilus.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default",
+        "baby",
+        "saddle",
+        "armor"
+      ],
+      "textureKeys": [
+        "default",
+        "baby",
+        "saddle",
+        "armor_none",
+        "armor_copper",
+        "armor_iron",
+        "armor_gold",
+        "armor_diamond",
+        "armor_netherite"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.nautilus",
+      "model": "models\\entity\\nautilus.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/nautilus/nautilus",
+      "textureFile": "textures\\entity\\nautilus\\nautilus.png",
+      "poseAnimations": []
+    },
+    "minecraft:npc": {
+      "definition": "npc.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "npc_1",
+        "npc_2",
+        "npc_3",
+        "npc_4",
+        "npc_5",
+        "npc_6",
+        "npc_7",
+        "npc_8",
+        "npc_9",
+        "npc_10",
+        "npc_scientist_1",
+        "npc_scientist_2",
+        "npc_scientist_3",
+        "npc_scientist_4",
+        "npc_scientist_5",
+        "npc_scientist_6",
+        "npc_scientist_7",
+        "npc_scientist_8",
+        "npc_scientist_9",
+        "npc_scientist_10",
+        "npc_apiary_1",
+        "npc_apiary_2",
+        "npc_apiary_3",
+        "npc_apiary_4",
+        "npc_apiary_5",
+        "npc_teacher_1",
+        "npc_teacher_2",
+        "npc_teacher_3",
+        "npc_teacher_4",
+        "npc_teacher_5",
+        "npc_construction_1",
+        "npc_construction_2",
+        "npc_construction_3",
+        "npc_construction_4",
+        "npc_construction_5",
+        "npc_Agriculture_1",
+        "npc_Agriculture_2",
+        "npc_Agriculture_3",
+        "npc_Agriculture_4",
+        "npc_Agriculture_5",
+        "npc_Agriculture_6",
+        "npc_Agriculture_7",
+        "npc_Agriculture_8",
+        "npc_Agriculture_9",
+        "npc_Agriculture_10",
+        "npc_BusinessMobs_1",
+        "npc_BusinessMobs_2",
+        "npc_BusinessMobs_3",
+        "npc_BusinessMobs_4",
+        "npc_BusinessMobs_5",
+        "npc_EverydayBusiness_1",
+        "npc_EverydayBusiness_2",
+        "npc_EverydayBusiness_3",
+        "npc_EverydayBusiness_4",
+        "npc_EverydayBusiness_5",
+        "npc_Kiosk_1",
+        "npc_Kiosk_2",
+        "npc_Kiosk_3",
+        "npc_Kiosk_4",
+        "npc_Kiosk_5"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.npc",
+      "model": "models\\entity\\npc.geo.json",
+      "textureKey": "npc_1",
+      "texture": "textures/entity/npc/npc_1",
+      "textureFile": "textures\\entity\\npc\\npc_1.png",
+      "poseAnimations": []
+    },
+    "minecraft:ocelot": {
+      "definition": "ocelot.entity.json",
+      "alternativeDefinitions": [
+        "ocelot.v1.0.entity.json"
+      ],
+      "geometryKeys": [
+        "default",
+        "baby"
+      ],
+      "textureKeys": [
+        "black",
+        "red",
+        "siamese",
+        "wild",
+        "baby_wild"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.ocelot.v1.8",
+      "model": "models\\entity\\ocelot.geo.json",
+      "curatedBindPoseRotations": {
+        "body": [
+          90.0,
+          0.0,
+          0.0
+        ]
+      },
+      "textureKey": "wild",
+      "texture": "textures/entity/cat/ocelot",
+      "textureFile": "textures\\entity\\cat\\ocelot.png",
+      "poseAnimations": [
+        {
+          "alias": "curated",
+          "identifier": "animation.ocelot.walk",
+          "file": "animations\\ocelot.animation.json"
+        }
+      ],
+      "poseTransforms": {
+        "backLegL": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "backLegR": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "frontLegL": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "frontLegR": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "tail1": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            -51.57,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "tail2": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            62.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      }
+    },
+    "minecraft:panda": {
+      "definition": "panda.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default",
+        "baby"
+      ],
+      "textureKeys": [
+        "default",
+        "lazy",
+        "worried",
+        "playful",
+        "brown",
+        "weak",
+        "aggressive",
+        "baby_default",
+        "baby_lazy",
+        "baby_worried",
+        "baby_playful",
+        "baby_brown",
+        "baby_weak",
+        "baby_aggressive"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.panda",
+      "model": "models\\entity\\panda.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/panda/panda",
+      "textureFile": "textures\\entity\\panda\\panda.png",
+      "poseAnimations": []
+    },
+    "minecraft:parched": {
+      "definition": "parched.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "default"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.parched",
+      "model": "models\\entity\\parched.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/parched/parched",
+      "textureFile": "textures\\entity\\parched\\parched.png",
+      "poseAnimations": []
+    },
+    "minecraft:parrot": {
+      "definition": "parrot.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "blue",
+        "green",
+        "red_blue",
+        "yellow_blue",
+        "grey"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.parrot",
+      "model": "models\\entity\\parrot.geo.json",
+      "textureKey": "blue",
+      "texture": "textures/entity/parrot/parrot_blue",
+      "textureFile": "textures\\entity\\parrot\\parrot_blue.png",
+      "poseAnimations": []
+    },
+    "minecraft:phantom": {
+      "definition": "phantom.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "default"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.phantom",
+      "model": "models\\entity\\phantom.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/phantom",
+      "textureFile": "textures\\entity\\phantom.tga",
+      "poseAnimations": []
+    },
+    "minecraft:pig": {
+      "definition": "pig.entity.json",
+      "alternativeDefinitions": [
+        "pig.v1.0.entity.json"
+      ],
+      "geometryKeys": [
+        "default",
+        "baby"
+      ],
+      "textureKeys": [
+        "default",
+        "saddled",
+        "warm",
+        "cold",
+        "saddle",
+        "baby_default",
+        "baby_warm",
+        "baby_cold"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.pig.v3",
+      "model": "models\\entity\\pig.v3.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/pig/pig_v3",
+      "textureFile": "textures\\entity\\pig\\pig_v3.png",
+      "poseAnimations": []
+    },
+    "minecraft:piglin": {
+      "definition": "piglin.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default",
+        "baby"
+      ],
+      "textureKeys": [
+        "default",
+        "baby"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.piglin",
+      "model": "models\\entity\\piglin.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/piglin/piglin",
+      "textureFile": "textures\\entity\\piglin\\piglin.png",
+      "poseAnimations": []
+    },
+    "minecraft:piglin_brute": {
+      "definition": "piglin_brute.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "default"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.piglin",
+      "model": "models\\entity\\piglin.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/piglin/piglin_brute",
+      "textureFile": "textures\\entity\\piglin\\piglin_brute.png",
+      "poseAnimations": []
+    },
+    "minecraft:pillager": {
+      "definition": "pillager.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "default"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.pillager",
+      "model": "models\\entity\\pillager.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/pillager",
+      "textureFile": "textures\\entity\\pillager.png",
+      "poseAnimations": []
+    },
+    "minecraft:polar_bear": {
+      "definition": "polar_bear.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default",
+        "baby"
+      ],
+      "textureKeys": [
+        "default",
+        "baby"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.polarbear",
+      "model": "models\\entity\\polar_bear.geo.json",
+      "curatedBindPoseRotations": {
+        "body": [
+          90.0,
+          0.0,
+          0.0
+        ]
+      },
+      "textureKey": "default",
+      "texture": "textures/entity/polar_bear",
+      "textureFile": "textures\\entity\\polar_bear.png",
+      "poseAnimations": []
+    },
+    "minecraft:pufferfish": {
+      "definition": "pufferfish.entity.json",
+      "alternativeDefinitions": [
+        "pufferfish.v1.0.entity.json"
+      ],
+      "geometryKeys": [
+        "default",
+        "mid",
+        "large"
+      ],
+      "textureKeys": [
+        "default"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.pufferfish.small.v1.8",
+      "model": "models\\entity\\pufferfish.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/fish/pufferfish",
+      "textureFile": "textures\\entity\\fish\\pufferfish.png",
+      "poseAnimations": []
+    },
+    "minecraft:rabbit": {
+      "definition": "rabbit.entity.json",
+      "alternativeDefinitions": [
+        "rabbit.v1.0.entity.json"
+      ],
+      "geometryKeys": [
+        "default",
+        "baby"
+      ],
+      "textureKeys": [
+        "brown",
+        "white",
+        "black",
+        "white_splotched",
+        "gold",
+        "salt",
+        "toast",
+        "baby_brown",
+        "baby_white",
+        "baby_black",
+        "baby_white_splotched",
+        "baby_gold",
+        "baby_salt",
+        "baby_toast"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.rabbit.v2",
+      "model": "models\\entity\\rabbit.v2.geo.json",
+      "textureKey": "brown",
+      "texture": "textures/entity/rabbit/rabbit_brown",
+      "textureFile": "textures\\entity\\rabbit\\rabbit_brown.png",
+      "poseAnimations": []
+    },
+    "minecraft:ravager": {
+      "definition": "ravager.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "default"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.ravager",
+      "model": "models\\entity\\ravager.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/illager/ravager",
+      "textureFile": "textures\\entity\\illager\\ravager.png",
+      "poseAnimations": []
+    },
+    "minecraft:salmon": {
+      "definition": "salmon.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "default"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.salmon",
+      "model": "models\\entity\\salmon.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/fish/salmon",
+      "textureFile": "textures\\entity\\fish\\salmon.png",
+      "poseAnimations": []
+    },
+    "minecraft:sheep": {
+      "definition": "sheep.entity.json",
+      "alternativeDefinitions": [
+        "sheep.v1.0.entity.json"
+      ],
+      "geometryKeys": [
+        "default",
+        "sheared",
+        "baby"
+      ],
+      "textureKeys": [
+        "default",
+        "baby"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.sheep.v1.8",
+      "model": "models\\entity\\sheep.geo.json",
+      "inheritedGeometry": "geometry.sheep.sheared.v1.8",
+      "textureKey": "default",
+      "texture": "textures/entity/sheep/sheep",
+      "textureFile": "textures\\entity\\sheep\\sheep.tga",
+      "alphaMode": "opaque-visible-pixels",
+      "poseAnimations": []
+    },
+    "minecraft:shulker": {
+      "definition": "shulker.entity.json",
+      "alternativeDefinitions": [
+        "shulker.v1.0.entity.json"
+      ],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "undyed",
+        "white",
+        "orange",
+        "magenta",
+        "light_blue",
+        "yellow",
+        "lime",
+        "pink",
+        "gray",
+        "silver",
+        "cyan",
+        "purple",
+        "blue",
+        "brown",
+        "green",
+        "red",
+        "black"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.shulker.v1.8",
+      "model": "models\\entity\\shulker.geo.json",
+      "textureKey": "undyed",
+      "texture": "textures/entity/shulker/shulker_undyed",
+      "textureFile": "textures\\entity\\shulker\\shulker_undyed.png",
+      "poseAnimations": [
+        {
+          "alias": "curated",
+          "identifier": "animation.shulker.move",
+          "file": "animations\\shulker.animation.json"
+        }
+      ],
+      "poseTransforms": {
+        "head": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "lid": {
+          "position": [
+            0.0,
+            7.2,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      }
+    },
+    "minecraft:silverfish": {
+      "definition": "silverfish.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "default"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.silverfish",
+      "model": "models\\entity\\silverfish.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/silverfish",
+      "textureFile": "textures\\entity\\silverfish.png",
+      "poseAnimations": []
+    },
+    "minecraft:skeleton": {
+      "definition": "skeleton.entity.json",
+      "alternativeDefinitions": [
+        "skeleton.v1.0.entity.json"
+      ],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "default"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.skeleton.v1.8",
+      "model": "models\\entity\\skeleton.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/skeleton/skeleton",
+      "textureFile": "textures\\entity\\skeleton\\skeleton.png",
+      "poseAnimations": []
+    },
+    "minecraft:skeleton_horse": {
+      "definition": "skeleton_horse_v3.entity.json",
+      "alternativeDefinitions": [
+        "skeleton_horse_v2.entity.json",
+        "skeleton_horse_v1.entity.json"
+      ],
+      "geometryKeys": [
+        "default",
+        "baby"
+      ],
+      "textureKeys": [
+        "skeleton",
+        "markings_none",
+        "armor_none",
+        "baby_skeleton"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.horse.v3",
+      "model": "models\\entity\\horse_v3.geo.json",
+      "textureKey": "skeleton",
+      "texture": "textures/entity/horse2/horse_skeleton",
+      "textureFile": "textures\\entity\\horse2\\horse_skeleton.png",
+      "poseAnimations": [],
+      "hiddenBones": [
+        "MuleEarL",
+        "MuleEarR",
+        "Saddle",
+        "BitL",
+        "BitR",
+        "Bridle",
+        "ReinsL",
+        "ReinsR",
+        "BagL",
+        "BagR"
+      ]
+    },
+    "minecraft:slime": {
+      "definition": "slime.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default",
+        "armor"
+      ],
+      "textureKeys": [
+        "default"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.slime",
+      "model": "models\\entity\\slime.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/slime/slime",
+      "textureFile": "textures\\entity\\slime\\slime.png",
+      "poseAnimations": []
+    },
+    "minecraft:sniffer": {
+      "definition": "sniffer.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default",
+        "baby"
+      ],
+      "textureKeys": [
+        "default",
+        "baby"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.sniffer",
+      "model": "models\\entity\\sniffer.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/sniffer/sniffer",
+      "textureFile": "textures\\entity\\sniffer\\sniffer.png",
+      "poseAnimations": []
+    },
+    "minecraft:snow_golem": {
+      "definition": "snow_golem.entity.json",
+      "alternativeDefinitions": [
+        "snow_golem.v1.0.entity.json"
+      ],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "default"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.snowgolem.v1.8",
+      "model": "models\\entity\\snow_golem.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/snow_golem",
+      "textureFile": "textures\\entity\\snow_golem.png",
+      "poseAnimations": []
+    },
+    "minecraft:spider": {
+      "definition": "spider.entity.json",
+      "alternativeDefinitions": [
+        "spider.v1.0.entity.json"
+      ],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "default"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.spider.v1.8",
+      "model": "models\\entity\\spider.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/spider/spider",
+      "textureFile": "textures\\entity\\spider\\spider.tga",
+      "poseAnimations": [
+        {
+          "alias": "curated",
+          "identifier": "animation.spider.default_leg_pose",
+          "file": "animations\\spider.animation.json"
+        }
+      ],
+      "poseTransforms": {
+        "leg0": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            45.0,
+            -45.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "leg1": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            -45.0,
+            45.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "leg2": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            22.5,
+            -33.3
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "leg3": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            -22.5,
+            33.3
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "leg4": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            -22.5,
+            -33.3
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "leg5": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            22.5,
+            33.3
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "leg6": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            -45.0,
+            -45.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "leg7": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            45.0,
+            45.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      }
+    },
+    "minecraft:squid": {
+      "definition": "squid.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default",
+        "baby"
+      ],
+      "textureKeys": [
+        "default",
+        "baby"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.squid",
+      "model": "models\\entity\\squid.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/squid",
+      "textureFile": "textures\\entity\\squid.png",
+      "poseAnimations": []
+    },
+    "minecraft:stray": {
+      "definition": "stray.entity.json",
+      "alternativeDefinitions": [
+        "stray.v1.0.entity.json"
+      ],
+      "geometryKeys": [
+        "default",
+        "overlay"
+      ],
+      "textureKeys": [
+        "default",
+        "overlay"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.skeleton.stray.v1.8",
+      "model": "models\\entity\\stray.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/skeleton/stray",
+      "textureFile": "textures\\entity\\skeleton\\stray.png",
+      "poseAnimations": []
+    },
+    "minecraft:strider": {
+      "definition": "strider.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default",
+        "baby"
+      ],
+      "textureKeys": [
+        "default",
+        "saddled",
+        "suffocated",
+        "suffocated_saddled",
+        "baby_default",
+        "baby_suffocated"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.strider",
+      "model": "models\\entity\\strider.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/strider/strider",
+      "textureFile": "textures\\entity\\strider\\strider.png",
+      "poseAnimations": []
+    },
+    "minecraft:sulfur_cube": {
+      "definition": "sulfur_cube.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default",
+        "small"
+      ],
+      "textureKeys": [
+        "default",
+        "small",
+        "tnt",
+        "outer",
+        "outer_small"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.sulfur_cube",
+      "model": "models\\entity\\sulfur_cube.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/sulfur_cube/sulfur_cube_inner",
+      "textureFile": "textures\\entity\\sulfur_cube\\sulfur_cube_inner.png",
+      "poseAnimations": []
+    },
+    "minecraft:tadpole": {
+      "definition": "tadpole.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "default"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.tadpole",
+      "model": "models\\entity\\tadpole.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/tadpole/tadpole",
+      "textureFile": "textures\\entity\\tadpole\\tadpole.png",
+      "poseAnimations": []
+    },
+    "minecraft:trader_llama": {
+      "definition": "trader_llama.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default",
+        "baby"
+      ],
+      "textureKeys": [
+        "creamy",
+        "white",
+        "brown",
+        "gray",
+        "decor_none",
+        "decor_white",
+        "decor_orange",
+        "decor_magenta",
+        "decor_light_blue",
+        "decor_yellow",
+        "decor_lime",
+        "decor_pink",
+        "decor_gray",
+        "decor_silver",
+        "decor_cyan",
+        "decor_purple",
+        "decor_blue",
+        "decor_brown",
+        "decor_green",
+        "decor_red",
+        "decor_black",
+        "decor_wandering_trader",
+        "baby_creamy",
+        "baby_white",
+        "baby_brown",
+        "baby_gray",
+        "baby_decor_wandering_trader"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.llama.v1.8",
+      "model": "models\\entity\\llama.geo.json",
+      "curatedBindPoseRotations": {
+        "body": [
+          90.0,
+          0.0,
+          0.0
+        ]
+      },
+      "textureKey": "creamy",
+      "texture": "textures/entity/llama/llama_creamy",
+      "textureFile": "textures\\entity\\llama\\llama_creamy.png",
+      "textureLayers": [
+        "textures/entity/llama/llama_creamy",
+        "textures/entity/llama/decor/trader_llama_decor"
+      ],
+      "poseAnimations": [
+        {
+          "alias": "curated",
+          "identifier": "animation.llama.setup",
+          "file": "animations\\llama.animation.json"
+        }
+      ],
+      "poseTransforms": {
+        "body": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      },
+      "hiddenBones": [
+        "chest1",
+        "chest2"
+      ]
+    },
+    "minecraft:tropicalfish": {
+      "definition": "tropicalfish.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "typeA",
+        "typeB"
+      ],
+      "textureKeys": [
+        "typeA",
+        "typeB",
+        "aPattern1",
+        "aPattern2",
+        "aPattern3",
+        "aPattern4",
+        "aPattern5",
+        "aPattern6",
+        "bPattern1",
+        "bPattern2",
+        "bPattern3",
+        "bPattern4",
+        "bPattern5",
+        "bPattern6"
+      ],
+      "geometryKey": "typeA",
+      "geometry": "geometry.tropicalfish_a",
+      "model": "models\\entity\\tropical_fish.geo.json",
+      "textureKey": "typeA",
+      "texture": "textures/entity/fish/tropical_a",
+      "textureFile": "textures\\entity\\fish\\tropical_a.png",
+      "poseAnimations": []
+    },
+    "minecraft:turtle": {
+      "definition": "turtle.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default",
+        "baby"
+      ],
+      "textureKeys": [
+        "default",
+        "baby"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.turtle",
+      "model": "models\\entity\\turtle.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/sea_turtle",
+      "textureFile": "textures\\entity\\sea_turtle.png",
+      "poseAnimations": [
+        {
+          "alias": "curated",
+          "identifier": "animation.turtle.general",
+          "file": "animations\\turtle.animations.json"
+        }
+      ],
+      "poseTransforms": {
+        "body": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "eggbelly": {
+          "position": [
+            0.0,
+            -0.08,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      }
+    },
+    "minecraft:vex": {
+      "definition": "vex.entity.json",
+      "alternativeDefinitions": [
+        "vex.v1.0.entity.json"
+      ],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "default",
+        "charging"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.vex.v1.8",
+      "model": "models\\entity\\vex.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/vex/vex",
+      "textureFile": "textures\\entity\\vex\\vex.png",
+      "poseAnimations": []
+    },
+    "minecraft:villager": {
+      "definition": "villager.entity.json",
+      "alternativeDefinitions": [
+        "villager.v1.0.entity.json"
+      ],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "farmer",
+        "librarian",
+        "priest",
+        "smith",
+        "butcher"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.villager.v1.8",
+      "model": "models\\entity\\villager.geo.json",
+      "textureKey": "farmer",
+      "texture": "textures/entity/villager/farmer",
+      "textureFile": "textures\\entity\\villager\\farmer.png",
+      "poseAnimations": [
+        {
+          "alias": "curated",
+          "identifier": "animation.villager.general",
+          "file": "animations\\villager.animation.json"
+        }
+      ],
+      "poseTransforms": {
+        "arms": {
+          "position": [
+            0.0,
+            -1.0,
+            -1.0
+          ],
+          "rotation": [
+            -42.97,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      }
+    },
+    "minecraft:villager_v2": {
+      "definition": "villager_v2.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default",
+        "baby"
+      ],
+      "textureKeys": [
+        "base",
+        "base2",
+        "base3",
+        "base4",
+        "base5",
+        "base6",
+        "desert",
+        "jungle",
+        "plains",
+        "savanna",
+        "snow",
+        "swamp",
+        "taiga",
+        "armorer",
+        "butcher",
+        "cartographer",
+        "cleric",
+        "farmer",
+        "fisherman",
+        "fletcher",
+        "leatherworker",
+        "librarian",
+        "shepherd",
+        "tool_smith",
+        "weapon_smith",
+        "stonemason",
+        "nitwit",
+        "unskilled",
+        "level_stone",
+        "level_iron",
+        "level_gold",
+        "level_emerald",
+        "level_diamond",
+        "baby_base",
+        "baby_base2",
+        "baby_base3",
+        "baby_base4",
+        "baby_base5",
+        "baby_base6",
+        "baby_desert",
+        "baby_jungle",
+        "baby_plains",
+        "baby_savanna",
+        "baby_snow",
+        "baby_swamp",
+        "baby_taiga"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.villager_v2",
+      "model": "models\\entity\\villager_v2.geo.json",
+      "textureKey": "base",
+      "texture": "textures/entity/villager2/villager",
+      "textureFile": "textures\\entity\\villager2\\villager.png",
+      "poseAnimations": [
+        {
+          "alias": "curated",
+          "identifier": "animation.villager.general",
+          "file": "animations\\villager.animation.json"
+        }
+      ],
+      "poseTransforms": {
+        "arms": {
+          "position": [
+            0.0,
+            -1.0,
+            -1.0
+          ],
+          "rotation": [
+            -42.97,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      }
+    },
+    "minecraft:vindicator": {
+      "definition": "vindicator.entity.json",
+      "alternativeDefinitions": [
+        "vindicator.v1.0.entity.json"
+      ],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "default"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.vindicator.v1.8",
+      "model": "models\\entity\\vindicator.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/vindicator",
+      "textureFile": "textures\\entity\\vindicator.png",
+      "poseAnimations": []
+    },
+    "minecraft:wandering_trader": {
+      "definition": "wandering_trader.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "default"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.villager_v2",
+      "model": "models\\entity\\villager_v2.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/wandering_trader",
+      "textureFile": "textures\\entity\\wandering_trader.png",
+      "poseAnimations": [
+        {
+          "alias": "curated",
+          "identifier": "animation.villager.general",
+          "file": "animations\\villager.animation.json"
+        }
+      ],
+      "poseTransforms": {
+        "arms": {
+          "position": [
+            0.0,
+            -1.0,
+            -1.0
+          ],
+          "rotation": [
+            -42.97,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      }
+    },
+    "minecraft:warden": {
+      "definition": "warden.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "default",
+        "bioluminescent_layer",
+        "spots_1",
+        "spots_2",
+        "tendrils",
+        "heart"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.warden",
+      "model": "models\\entity\\warden.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/warden/warden",
+      "textureFile": "textures\\entity\\warden\\warden.png",
+      "poseAnimations": []
+    },
+    "minecraft:witch": {
+      "definition": "witch.entity.json",
+      "alternativeDefinitions": [
+        "witch.v1.0.entity.json"
+      ],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "default"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.villager.witch.v1.8",
+      "model": "models\\entity\\witch.geo.json",
+      "inheritedGeometry": "geometry.villager.v1.8",
+      "textureKey": "default",
+      "texture": "textures/entity/witch",
+      "textureFile": "textures\\entity\\witch.png",
+      "poseAnimations": [
+        {
+          "alias": "curated",
+          "identifier": "animation.villager.general",
+          "file": "animations\\villager.animation.json"
+        },
+        {
+          "alias": "curated",
+          "identifier": "animation.witch.general",
+          "file": "animations\\witch.animation.json"
+        }
+      ],
+      "poseTransforms": {
+        "arms": {
+          "position": [
+            0.0,
+            -1.0,
+            -1.0
+          ],
+          "rotation": [
+            -42.97,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "nose": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            2.5
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      }
+    },
+    "minecraft:wither": {
+      "definition": "wither.entity.json",
+      "alternativeDefinitions": [
+        "wither.v1.0.entity.json"
+      ],
+      "geometryKeys": [
+        "default",
+        "armor"
+      ],
+      "textureKeys": [
+        "default",
+        "armor_white",
+        "armor_blue",
+        "invulnerable"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.witherBoss",
+      "model": "models\\entity\\wither_boss.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/wither_boss/wither",
+      "textureFile": "textures\\entity\\wither_boss\\wither.png",
+      "poseAnimations": []
+    },
+    "minecraft:wither_skeleton": {
+      "definition": "wither_skeleton.entity.json",
+      "alternativeDefinitions": [
+        "wither_skeleton.v1.0.entity.json"
+      ],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "default"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.skeleton.wither.v1.8",
+      "model": "models\\entity\\wither_skeleton.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/skeleton/wither_skeleton",
+      "textureFile": "textures\\entity\\skeleton\\wither_skeleton.png",
+      "poseAnimations": []
+    },
+    "minecraft:wolf": {
+      "definition": "wolf.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default",
+        "baby"
+      ],
+      "textureKeys": [
+        "default",
+        "angry",
+        "tame",
+        "pale_default",
+        "pale_angry",
+        "pale_tame",
+        "ashen_default",
+        "ashen_angry",
+        "ashen_tame",
+        "black_default",
+        "black_angry",
+        "black_tame",
+        "chestnut_default",
+        "chestnut_angry",
+        "chestnut_tame",
+        "rusty_default",
+        "rusty_angry",
+        "rusty_tame",
+        "snowy_default",
+        "snowy_angry",
+        "snowy_tame",
+        "spotted_default",
+        "spotted_angry",
+        "spotted_tame",
+        "striped_default",
+        "striped_angry",
+        "striped_tame",
+        "woods_default",
+        "woods_angry",
+        "woods_tame",
+        "baby_pale_default",
+        "baby_pale_angry",
+        "baby_pale_tame",
+        "baby_ashen_default",
+        "baby_ashen_angry",
+        "baby_ashen_tame",
+        "baby_black_default",
+        "baby_black_angry",
+        "baby_black_tame",
+        "baby_chestnut_default",
+        "baby_chestnut_angry",
+        "baby_chestnut_tame",
+        "baby_rusty_default",
+        "baby_rusty_angry",
+        "baby_rusty_tame",
+        "baby_snowy_default",
+        "baby_snowy_angry",
+        "baby_snowy_tame",
+        "baby_spotted_default",
+        "baby_spotted_angry",
+        "baby_spotted_tame",
+        "baby_striped_default",
+        "baby_striped_angry",
+        "baby_striped_tame",
+        "baby_woods_default",
+        "baby_woods_angry",
+        "baby_woods_tame"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.wolf",
+      "model": "models\\entity\\wolf.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/wolf/wolf",
+      "textureFile": "textures\\entity\\wolf\\wolf.png",
+      "poseAnimations": []
+    },
+    "minecraft:zoglin": {
+      "definition": "zoglin.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default",
+        "baby"
+      ],
+      "textureKeys": [
+        "default",
+        "baby"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.hoglin",
+      "model": "models\\entity\\hoglin.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/zoglin/zoglin",
+      "textureFile": "textures\\entity\\zoglin\\zoglin.png",
+      "poseAnimations": []
+    },
+    "minecraft:zombie": {
+      "definition": "zombie.entity.json",
+      "alternativeDefinitions": [
+        "zombie.v1.0.entity.json"
+      ],
+      "geometryKeys": [
+        "default",
+        "baby"
+      ],
+      "textureKeys": [
+        "default",
+        "baby"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.zombie.v1.8",
+      "model": "models\\entity\\zombie.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/zombie/zombie",
+      "textureFile": "textures\\entity\\zombie\\zombie.png",
+      "poseAnimations": []
+    },
+    "minecraft:zombie_horse": {
+      "definition": "zombie_horse_v3.entity.json",
+      "alternativeDefinitions": [
+        "zombie_horse_v2.entity.json",
+        "zombie_horse_v1.entity.json"
+      ],
+      "geometryKeys": [
+        "default",
+        "baby"
+      ],
+      "textureKeys": [
+        "zombie",
+        "markings_none",
+        "armor_none",
+        "armor_leather",
+        "armor_iron",
+        "armor_gold",
+        "armor_diamond",
+        "armor_copper",
+        "armor_netherite",
+        "baby_zombie"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.horse.v3",
+      "model": "models\\entity\\horse_v3.geo.json",
+      "textureKey": "zombie",
+      "texture": "textures/entity/horse2/horse_zombie",
+      "textureFile": "textures\\entity\\horse2\\horse_zombie.png",
+      "poseAnimations": []
+    },
+    "minecraft:zombie_nautilus": {
+      "definition": "zombie_nautilus.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default",
+        "coral",
+        "saddle",
+        "armor"
+      ],
+      "textureKeys": [
+        "default",
+        "coral",
+        "saddle",
+        "armor_none",
+        "armor_copper",
+        "armor_iron",
+        "armor_gold",
+        "armor_diamond",
+        "armor_netherite"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.nautilus",
+      "model": "models\\entity\\nautilus.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/nautilus/zombie_nautilus",
+      "textureFile": "textures\\entity\\nautilus\\zombie_nautilus.png",
+      "poseAnimations": []
+    },
+    "minecraft:zombie_pigman": {
+      "definition": "zombie_pigman.entity.json",
+      "alternativeDefinitions": [
+        "zombie_pigman.v1.0.entity.json"
+      ],
+      "geometryKeys": [
+        "default",
+        "baby"
+      ],
+      "textureKeys": [
+        "default",
+        "baby"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.piglin",
+      "model": "models\\entity\\piglin.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/piglin/zombie_piglin",
+      "textureFile": "textures\\entity\\piglin\\zombie_piglin.png",
+      "poseAnimations": []
+    },
+    "minecraft:zombie_villager": {
+      "definition": "zombie_villager.entity.json",
+      "alternativeDefinitions": [
+        "zombie_villager.v1.0.entity.json"
+      ],
+      "geometryKeys": [
+        "default"
+      ],
+      "textureKeys": [
+        "smith",
+        "butcher",
+        "librarian",
+        "priest",
+        "farmer"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.zombie.villager.v1.8",
+      "model": "models\\entity\\zombie_villager.geo.json",
+      "textureKey": "smith",
+      "texture": "textures/entity/zombie_villager/zombie_smith",
+      "textureFile": "textures\\entity\\zombie_villager\\zombie_smith.png",
+      "poseAnimations": []
+    },
+    "minecraft:zombie_villager_v2": {
+      "definition": "zombie_villager_v2.entity.json",
+      "alternativeDefinitions": [],
+      "geometryKeys": [
+        "default",
+        "baby"
+      ],
+      "textureKeys": [
+        "default",
+        "desert",
+        "jungle",
+        "plains",
+        "savanna",
+        "snow",
+        "swamp",
+        "taiga",
+        "armorer",
+        "butcher",
+        "cartographer",
+        "cleric",
+        "farmer",
+        "fisherman",
+        "fletcher",
+        "leatherworker",
+        "librarian",
+        "shepherd",
+        "tool_smith",
+        "weapon_smith",
+        "stonemason",
+        "nitwit",
+        "unskilled",
+        "baby_default",
+        "baby_desert",
+        "baby_jungle",
+        "baby_plains",
+        "baby_savanna",
+        "baby_snow",
+        "baby_swamp",
+        "baby_taiga"
+      ],
+      "geometryKey": "default",
+      "geometry": "geometry.zombie.villager_v2",
+      "model": "models\\entity\\zombie_villager_v2.geo.json",
+      "textureKey": "default",
+      "texture": "textures/entity/zombie_villager2/zombie-villager",
+      "textureFile": "textures\\entity\\zombie_villager2\\zombie-villager.png",
+      "poseAnimations": []
+    }
+  },
+  "resizeMethod": "nearest-neighbor 2x from targeted audited 80x80 renders",
+  "correctedEntities": [
+    "breeze",
+    "cave_spider",
+    "donkey",
+    "elder_guardian",
+    "ender_dragon",
+    "enderman",
+    "evocation_illager",
+    "guardian",
+    "hoglin",
+    "horse",
+    "llama",
+    "mule",
+    "pig",
+    "polar_bear",
+    "ravager",
+    "sheep",
+    "skeleton_horse",
+    "spider",
+    "trader_llama",
+    "villager",
+    "villager_v2",
+    "wandering_trader",
+    "witch",
+    "zoglin",
+    "zombie_horse"
+  ],
+  "correctionDate": "2026-08-20",
+  "villagerProfessionVariants": [
+    {
+      "profession": "armorer",
+      "file": "villager_armorer.png",
+      "biome": "plains",
+      "level": "stone",
+      "textureLayers": [
+        "base",
+        "biome_plains",
+        "armorer",
+        "level_stone"
+      ],
+      "resolution": "160x160",
+      "brimBindPoseRotation": [
+        -90.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "profession": "butcher",
+      "file": "villager_butcher.png",
+      "biome": "plains",
+      "level": "stone",
+      "textureLayers": [
+        "base",
+        "biome_plains",
+        "butcher",
+        "level_stone"
+      ],
+      "resolution": "160x160",
+      "brimBindPoseRotation": [
+        -90.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "profession": "cartographer",
+      "file": "villager_cartographer.png",
+      "biome": "plains",
+      "level": "stone",
+      "textureLayers": [
+        "base",
+        "biome_plains",
+        "cartographer",
+        "level_stone"
+      ],
+      "resolution": "160x160",
+      "brimBindPoseRotation": [
+        -90.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "profession": "cleric",
+      "file": "villager_cleric.png",
+      "biome": "plains",
+      "level": "stone",
+      "textureLayers": [
+        "base",
+        "biome_plains",
+        "cleric",
+        "level_stone"
+      ],
+      "resolution": "160x160",
+      "brimBindPoseRotation": [
+        -90.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "profession": "farmer",
+      "file": "villager_farmer.png",
+      "biome": "plains",
+      "level": "stone",
+      "textureLayers": [
+        "base",
+        "biome_plains",
+        "farmer",
+        "level_stone"
+      ],
+      "resolution": "160x160",
+      "brimBindPoseRotation": [
+        -90.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "profession": "fisherman",
+      "file": "villager_fisherman.png",
+      "biome": "plains",
+      "level": "stone",
+      "textureLayers": [
+        "base",
+        "biome_plains",
+        "fisherman",
+        "level_stone"
+      ],
+      "resolution": "160x160",
+      "brimBindPoseRotation": [
+        -90.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "profession": "fletcher",
+      "file": "villager_fletcher.png",
+      "biome": "plains",
+      "level": "stone",
+      "textureLayers": [
+        "base",
+        "biome_plains",
+        "fletcher",
+        "level_stone"
+      ],
+      "resolution": "160x160",
+      "brimBindPoseRotation": [
+        -90.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "profession": "leatherworker",
+      "file": "villager_leatherworker.png",
+      "biome": "plains",
+      "level": "stone",
+      "textureLayers": [
+        "base",
+        "biome_plains",
+        "leatherworker",
+        "level_stone"
+      ],
+      "resolution": "160x160",
+      "brimBindPoseRotation": [
+        -90.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "profession": "librarian",
+      "file": "villager_librarian.png",
+      "biome": "plains",
+      "level": "stone",
+      "textureLayers": [
+        "base",
+        "biome_plains",
+        "librarian",
+        "level_stone"
+      ],
+      "resolution": "160x160",
+      "brimBindPoseRotation": [
+        -90.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "profession": "shepherd",
+      "file": "villager_shepherd.png",
+      "biome": "plains",
+      "level": "stone",
+      "textureLayers": [
+        "base",
+        "biome_plains",
+        "shepherd",
+        "level_stone"
+      ],
+      "resolution": "160x160",
+      "brimBindPoseRotation": [
+        -90.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "profession": "stonemason",
+      "file": "villager_stonemason.png",
+      "biome": "plains",
+      "level": "stone",
+      "textureLayers": [
+        "base",
+        "biome_plains",
+        "stonemason",
+        "level_stone"
+      ],
+      "resolution": "160x160",
+      "brimBindPoseRotation": [
+        -90.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "profession": "toolsmith",
+      "file": "villager_toolsmith.png",
+      "biome": "plains",
+      "level": "stone",
+      "textureLayers": [
+        "base",
+        "biome_plains",
+        "toolsmith",
+        "level_stone"
+      ],
+      "resolution": "160x160",
+      "brimBindPoseRotation": [
+        -90.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "profession": "weaponsmith",
+      "file": "villager_weaponsmith.png",
+      "biome": "plains",
+      "level": "stone",
+      "textureLayers": [
+        "base",
+        "biome_plains",
+        "weaponsmith",
+        "level_stone"
+      ],
+      "resolution": "160x160",
+      "brimBindPoseRotation": [
+        -90.0,
+        0.0,
+        0.0
+      ]
+    }
+  ]
+}
